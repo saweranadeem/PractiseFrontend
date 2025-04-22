@@ -167,9 +167,15 @@ const EcommerceAddProduct = () => {
       clinic_email: "",
       clinic_phone: "",
       clinic_website: "",
+      insurance_accepted: [],
+      doctors_providers: [],
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter a Clinic Name"),
+      doctors_providers: Yup.array().min(
+        1,
+        "Please select at least one contract type"
+      ),
     }),
     onSubmit: (values) => {
       console.log("Specialization tags before submission:", specializationTags);
@@ -963,7 +969,16 @@ const EcommerceAddProduct = () => {
                       id="doctors-providers"
                       multiple
                       value={validation.values.doctors_providers || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("doctors_providers", value);
+                      }}
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.errors.doctors_providers &&
@@ -978,6 +993,7 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
+
                     {validation.errors.doctors_providers &&
                     validation.touched.doctors_providers ? (
                       <FormFeedback type="invalid">

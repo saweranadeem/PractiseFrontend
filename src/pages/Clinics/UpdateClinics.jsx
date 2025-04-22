@@ -188,13 +188,13 @@ const EcommerceAddProduct = () => {
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter a Clinic Name"),
     }),
+
     onSubmit: async (values) => {
       const updatedClinic = {
         name: values.name,
         owner_fname: values.owner_fname,
         owner_lname: values.owner_lname,
         owner_email: values.owner_email,
-        owner_password: values.owner_password,
         clinic_email: values.clinic_email,
         clinic_phone: values.clinic_phone,
         clinic_website: values.clinic_website,
@@ -205,12 +205,23 @@ const EcommerceAddProduct = () => {
         insurance_accepted: values.insurance_accepted,
         npi: values.npi,
       };
+
+      if (values.owner_password) {
+        updatedClinic.owner_password = values.owner_password;
+      }
+
+      console.log("Submitting:", updatedClinic);
+
       setLoading(true);
       try {
-        await axios.put(`${api.API_URL}/clinic/${id}`, updatedClinic);
+        const response = await axios.put(
+          `${api.API_URL}/clinic/${id}`,
+          updatedClinic
+        );
+        console.log("Update successful:", response.data);
         history("/clinics-list");
       } catch (err) {
-        console.error("Update failed:", err);
+        console.error("Update failed:", err.response?.data || err.message);
       } finally {
         setLoading(false);
       }
@@ -844,7 +855,16 @@ const EcommerceAddProduct = () => {
                       id="insurance-accepted"
                       multiple
                       value={validation.values.insurance_accepted || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("insurance_accepted", value);
+                      }}
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.errors.insurance_accepted &&
@@ -859,6 +879,7 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
+
                     {validation.errors.insurance_accepted &&
                     validation.touched.insurance_accepted ? (
                       <FormFeedback type="invalid">
@@ -877,7 +898,16 @@ const EcommerceAddProduct = () => {
                       id="doctors-providers"
                       multiple
                       value={validation.values.doctors_providers || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("doctors_providers", value);
+                      }}
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.errors.doctors_providers &&
@@ -892,6 +922,7 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
+
                     {validation.errors.doctors_providers &&
                     validation.touched.doctors_providers ? (
                       <FormFeedback type="invalid">

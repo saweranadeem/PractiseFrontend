@@ -76,6 +76,8 @@ const EcommerceAddProduct = () => {
       email: doctor?.email,
       phone: doctor?.phone,
       address: doctor?.address,
+      doctors_providers: doctor?.doctors_providers || [],
+      insuranceList: doctor?.insuranceList || [],
     },
     validationSchema: Yup.object({
       provider_fname: Yup.string().required("Please Enter a Clinic Name"),
@@ -94,7 +96,7 @@ const EcommerceAddProduct = () => {
         email: values.email,
         phone: values.phone,
         address: values.address,
-        insurance_accepted: values.insurance_accepted,
+        insuranceList: values.insurance_accepted,
         doctors_providers: values.doctors_providers,
       };
 
@@ -669,15 +671,24 @@ const EcommerceAddProduct = () => {
                     <Label for="insurance-accepted">Insurance Accepted</Label>
                     <Input
                       type="select"
-                      name="insurance_accepted"
+                      name="insuranceList"
                       id="insurance-accepted"
                       multiple
-                      value={validation.values.insurance_accepted || []}
-                      onChange={validation.handleChange}
+                      value={validation.values.insuranceList || []}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("insuranceList", value);
+                      }}
                       onBlur={validation.handleBlur}
                       invalid={
-                        validation.errors.insurance_accepted &&
-                        validation.touched.insurance_accepted
+                        validation.errors.insuranceList &&
+                        validation.touched.insuranceList
                           ? true
                           : false
                       }
@@ -696,8 +707,6 @@ const EcommerceAddProduct = () => {
                     ) : null}
                   </FormGroup>
                 </div>
-
-                {/* Doctors and Providers Multi-select Dropdown */}
                 <div className="mt-3">
                   <FormGroup>
                     <Label for="doctors-providers">Contract Type:</Label>
@@ -707,7 +716,16 @@ const EcommerceAddProduct = () => {
                       id="doctors-providers"
                       multiple
                       value={validation.values.doctors_providers || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("doctors_providers", value);
+                      }}
                       onBlur={validation.handleBlur}
                       invalid={
                         validation.errors.doctors_providers &&
@@ -722,6 +740,7 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
+
                     {validation.errors.doctors_providers &&
                     validation.touched.doctors_providers ? (
                       <FormFeedback type="invalid">

@@ -17,9 +17,9 @@ import {
   FormFeedback,
   Form,
   FormGroup,
-  Button
+  Button,
 } from "reactstrap";
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes } from "react-icons/fa";
 // Redux
 import { useDispatch } from "react-redux";
 import { addNewDoctor as onAddNewDoctor } from "../../slices/thunks";
@@ -45,10 +45,15 @@ const EcommerceAddProduct = () => {
   const dispatch = useDispatch();
 
   const doctorsList = [
-    "Part Time", "Full time", "Work from home", "Salaried", "Fix Contract", "Percentage"
+    "Part Time",
+    "Full time",
+    "Work from home",
+    "Salaried",
+    "Fix Contract",
+    "Percentage",
   ];
 
-  const [insuranceList, setInsuranceList] = useState([])
+  const [insuranceList, setInsuranceList] = useState([]);
   const [showCaqhPassword, setShowCaqhPassword] = useState(false);
   const [showPecosPassword, setShowPecosPassword] = useState(false);
 
@@ -70,11 +75,20 @@ const EcommerceAddProduct = () => {
       specialty: "",
       email: "",
       phone: "",
-      address: ""
-
+      address: "",
+      insurance_accepted: [],
+      doctors_providers: [],
     },
     validationSchema: Yup.object({
       provider_fname: Yup.string().required("Please Enter a Clinic Name"),
+      insurance_accepted: Yup.array().min(
+        1,
+        "Please select at least one insurance"
+      ),
+      doctors_providers: Yup.array().min(
+        1,
+        "Please select at least one contract type"
+      ),
     }),
     onSubmit: (values) => {
       const newProvider = {
@@ -92,12 +106,13 @@ const EcommerceAddProduct = () => {
         email: values.email,
         phone: values.phone,
         address: values.address,
-        insuranceList
+        insuranceList: values.insurance_accepted,
+        doctors_providers: values.doctors_providers,
       };
       dispatch(onAddNewDoctor(newProvider));
       history("/doctors-list");
       validation.resetForm();
-    }
+    },
   });
   useEffect(() => {
     const fetchSettings = async () => {
@@ -124,18 +139,16 @@ const EcommerceAddProduct = () => {
             <Form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log("clicked")
+                console.log("clicked");
                 validation.handleSubmit();
                 return false;
-              }}>
-
+              }}
+            >
               <Card>
                 <CardHeader>
                   <Nav className="nav-tabs-custom card-header-tabs border-bottom-0">
                     <NavItem>
-                      <NavLink
-                        style={{ cursor: "pointer" }}
-                      >
+                      <NavLink style={{ cursor: "pointer" }}>
                         Provider Legal Information:
                       </NavLink>
                     </NavItem>
@@ -161,10 +174,18 @@ const EcommerceAddProduct = () => {
                           value={validation.values.provider_fname || ""}
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          invalid={validation.errors.provider_fname && validation.touched.provider_fname ? true : false}
+                          invalid={
+                            validation.errors.provider_fname &&
+                            validation.touched.provider_fname
+                              ? true
+                              : false
+                          }
                         />
-                        {validation.errors.provider_fname && validation.touched.provider_fname ? (
-                          <FormFeedback type="invalid">{validation.errors.provider_fname}</FormFeedback>
+                        {validation.errors.provider_fname &&
+                        validation.touched.provider_fname ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.provider_fname}
+                          </FormFeedback>
                         ) : null}
                       </div>
                     </Col>
@@ -185,10 +206,18 @@ const EcommerceAddProduct = () => {
                           value={validation.values.provider_lname || ""}
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          invalid={validation.errors.provider_lname && validation.touched.provider_lname ? true : false}
+                          invalid={
+                            validation.errors.provider_lname &&
+                            validation.touched.provider_lname
+                              ? true
+                              : false
+                          }
                         />
-                        {validation.errors.provider_lname && validation.touched.provider_lname ? (
-                          <FormFeedback type="invalid">{validation.errors.provider_lname}</FormFeedback>
+                        {validation.errors.provider_lname &&
+                        validation.touched.provider_lname ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.provider_lname}
+                          </FormFeedback>
                         ) : null}
                       </div>
                     </Col>
@@ -209,10 +238,18 @@ const EcommerceAddProduct = () => {
                           value={validation.values.provider_mi || ""}
                           onBlur={validation.handleBlur}
                           onChange={validation.handleChange}
-                          invalid={validation.errors.provider_mi && validation.touched.provider_mi ? true : false}
+                          invalid={
+                            validation.errors.provider_mi &&
+                            validation.touched.provider_mi
+                              ? true
+                              : false
+                          }
                         />
-                        {validation.errors.provider_mi && validation.touched.provider_mi ? (
-                          <FormFeedback type="invalid">{validation.errors.provider_mi}</FormFeedback>
+                        {validation.errors.provider_mi &&
+                        validation.touched.provider_mi ? (
+                          <FormFeedback type="invalid">
+                            {validation.errors.provider_mi}
+                          </FormFeedback>
                         ) : null}
                       </div>
                     </Col>
@@ -234,10 +271,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.npi_number || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.npi_number && validation.touched.npi_number ? true : false}
+                            invalid={
+                              validation.errors.npi_number &&
+                              validation.touched.npi_number
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.npi_number && validation.touched.npi_number ? (
-                            <FormFeedback type="invalid">{validation.errors.npi_number}</FormFeedback>
+                          {validation.errors.npi_number &&
+                          validation.touched.npi_number ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.npi_number}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -260,10 +305,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.tax_id || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.tax_id && validation.touched.tax_id ? true : false}
+                            invalid={
+                              validation.errors.tax_id &&
+                              validation.touched.tax_id
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.tax_id && validation.touched.tax_id ? (
-                            <FormFeedback type="invalid">{validation.errors.tax_id}</FormFeedback>
+                          {validation.errors.tax_id &&
+                          validation.touched.tax_id ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.tax_id}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -286,10 +339,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.license_number || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.license_number && validation.touched.license_number ? true : false}
+                            invalid={
+                              validation.errors.license_number &&
+                              validation.touched.license_number
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.license_number && validation.touched.license_number ? (
-                            <FormFeedback type="invalid">{validation.errors.license_number}</FormFeedback>
+                          {validation.errors.license_number &&
+                          validation.touched.license_number ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.license_number}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -312,10 +373,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.caqh_username || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.caqh_username && validation.touched.caqh_username ? true : false}
+                            invalid={
+                              validation.errors.caqh_username &&
+                              validation.touched.caqh_username
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.caqh_username && validation.touched.caqh_username ? (
-                            <FormFeedback type="invalid">{validation.errors.caqh_username}</FormFeedback>
+                          {validation.errors.caqh_username &&
+                          validation.touched.caqh_username ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.caqh_username}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -338,11 +407,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.caqh_password || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.caqh_password && validation.touched.caqh_password ? true : false}
+                            invalid={
+                              validation.errors.caqh_password &&
+                              validation.touched.caqh_password
+                                ? true
+                                : false
+                            }
                           />
                           <button
                             type="button"
-                            onClick={() => setShowCaqhPassword(!showCaqhPassword)}
+                            onClick={() =>
+                              setShowCaqhPassword(!showCaqhPassword)
+                            }
                             className="btn btn-priamry"
                             style={{
                               position: "absolute",
@@ -353,14 +429,20 @@ const EcommerceAddProduct = () => {
                               background: "red",
                               backgroundColor: "transparent", // Add this line
                               zIndex: 5,
-                              cursor: "pointer"
+                              cursor: "pointer",
                             }}
-                            
                           >
-                           {showCaqhPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            {showCaqhPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
                           </button>
-                          {validation.errors.caqh_password && validation.touched.caqh_password ? (
-                            <FormFeedback type="invalid">{validation.errors.caqh_password}</FormFeedback>
+                          {validation.errors.caqh_password &&
+                          validation.touched.caqh_password ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.caqh_password}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -383,10 +465,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.pecos_username || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.pecos_username && validation.touched.pecos_username ? true : false}
+                            invalid={
+                              validation.errors.pecos_username &&
+                              validation.touched.pecos_username
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.pecos_username && validation.touched.pecos_username ? (
-                            <FormFeedback type="invalid">{validation.errors.pecos_username}</FormFeedback>
+                          {validation.errors.pecos_username &&
+                          validation.touched.pecos_username ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.pecos_username}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -401,7 +491,7 @@ const EcommerceAddProduct = () => {
                         </label>
                         <div className="input-group mb-3">
                           <Input
-                           type={showPecosPassword ? "text" : "password"}
+                            type={showPecosPassword ? "text" : "password"}
                             className="form-control"
                             id="product-stock-input"
                             placeholder="Enter PECOS Password"
@@ -409,11 +499,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.pecos_password || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.pecos_password && validation.touched.pecos_password ? true : false}
+                            invalid={
+                              validation.errors.pecos_password &&
+                              validation.touched.pecos_password
+                                ? true
+                                : false
+                            }
                           />
-                             <button
+                          <button
                             type="button"
-                            onClick={() => setShowPecosPassword(!showPecosPassword)}
+                            onClick={() =>
+                              setShowPecosPassword(!showPecosPassword)
+                            }
                             className="btn btn-priamry"
                             style={{
                               position: "absolute",
@@ -424,14 +521,20 @@ const EcommerceAddProduct = () => {
                               background: "red",
                               backgroundColor: "transparent", // Add this line
                               zIndex: 5,
-                              cursor: "pointer"
+                              cursor: "pointer",
                             }}
-                            
                           >
-                            {showPecosPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                            {showPecosPassword ? (
+                              <EyeOff size={18} />
+                            ) : (
+                              <Eye size={18} />
+                            )}
                           </button>
-                          {validation.errors.pecos_password && validation.touched.pecos_password ? (
-                            <FormFeedback type="invalid">{validation.errors.pecos_password}</FormFeedback>
+                          {validation.errors.pecos_password &&
+                          validation.touched.pecos_password ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.pecos_password}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -454,10 +557,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.specialty || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.specialty && validation.touched.specialty ? true : false}
+                            invalid={
+                              validation.errors.specialty &&
+                              validation.touched.specialty
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.specialty && validation.touched.specialty ? (
-                            <FormFeedback type="invalid">{validation.errors.specialty}</FormFeedback>
+                          {validation.errors.specialty &&
+                          validation.touched.specialty ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.specialty}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -480,10 +591,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.email || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.email && validation.touched.email ? true : false}
+                            invalid={
+                              validation.errors.email &&
+                              validation.touched.email
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.email && validation.touched.email ? (
-                            <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                          {validation.errors.email &&
+                          validation.touched.email ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.email}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -506,10 +625,18 @@ const EcommerceAddProduct = () => {
                             value={validation.values.phone || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.phone && validation.touched.phone ? true : false}
+                            invalid={
+                              validation.errors.phone &&
+                              validation.touched.phone
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.phone && validation.touched.phone ? (
-                            <FormFeedback type="invalid">{validation.errors.phone}</FormFeedback>
+                          {validation.errors.phone &&
+                          validation.touched.phone ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.phone}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
@@ -532,15 +659,22 @@ const EcommerceAddProduct = () => {
                             value={validation.values.address || ""}
                             onBlur={validation.handleBlur}
                             onChange={validation.handleChange}
-                            invalid={validation.errors.address && validation.touched.address ? true : false}
+                            invalid={
+                              validation.errors.address &&
+                              validation.touched.address
+                                ? true
+                                : false
+                            }
                           />
-                          {validation.errors.address && validation.touched.address ? (
-                            <FormFeedback type="invalid">{validation.errors.address}</FormFeedback>
+                          {validation.errors.address &&
+                          validation.touched.address ? (
+                            <FormFeedback type="invalid">
+                              {validation.errors.address}
+                            </FormFeedback>
                           ) : null}
                         </div>
                       </div>
                     </Col>
-
                   </Row>
                 </CardBody>
               </Card>
@@ -564,9 +698,23 @@ const EcommerceAddProduct = () => {
                       id="insurance-accepted"
                       multiple
                       value={validation.values.insurance_accepted || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("insurance_accepted", value);
+                      }}
                       onBlur={validation.handleBlur}
-                      invalid={validation.errors.insurance_accepted && validation.touched.insurance_accepted ? true : false}
+                      invalid={
+                        validation.errors.insurance_accepted &&
+                        validation.touched.insurance_accepted
+                          ? true
+                          : false
+                      }
                     >
                       {insuranceList.map((insurance, index) => (
                         <option key={index} value={insurance}>
@@ -574,13 +722,14 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
-                    {validation.errors.insurance_accepted && validation.touched.insurance_accepted ? (
-                      <FormFeedback type="invalid">{validation.errors.insurance_accepted}</FormFeedback>
+                    {validation.errors.insurance_accepted &&
+                    validation.touched.insurance_accepted ? (
+                      <FormFeedback type="invalid">
+                        {validation.errors.insurance_accepted}
+                      </FormFeedback>
                     ) : null}
                   </FormGroup>
                 </div>
-
-                {/* Doctors and Providers Multi-select Dropdown */}
                 <div className="mt-3">
                   <FormGroup>
                     <Label for="doctors-providers">Contract Type:</Label>
@@ -590,9 +739,23 @@ const EcommerceAddProduct = () => {
                       id="doctors-providers"
                       multiple
                       value={validation.values.doctors_providers || []}
-                      onChange={validation.handleChange}
+                      onChange={(e) => {
+                        const options = e.target.options;
+                        const value = [];
+                        for (let i = 0, l = options.length; i < l; i++) {
+                          if (options[i].selected) {
+                            value.push(options[i].value);
+                          }
+                        }
+                        validation.setFieldValue("doctors_providers", value);
+                      }}
                       onBlur={validation.handleBlur}
-                      invalid={validation.errors.doctors_providers && validation.touched.doctors_providers ? true : false}
+                      invalid={
+                        validation.errors.doctors_providers &&
+                        validation.touched.doctors_providers
+                          ? true
+                          : false
+                      }
                     >
                       {doctorsList.map((doctor, index) => (
                         <option key={index} value={doctor}>
@@ -600,19 +763,21 @@ const EcommerceAddProduct = () => {
                         </option>
                       ))}
                     </Input>
-                    {validation.errors.doctors_providers && validation.touched.doctors_providers ? (
-                      <FormFeedback type="invalid">{validation.errors.doctors_providers}</FormFeedback>
+
+                    {validation.errors.doctors_providers &&
+                    validation.touched.doctors_providers ? (
+                      <FormFeedback type="invalid">
+                        {validation.errors.doctors_providers}
+                      </FormFeedback>
                     ) : null}
                   </FormGroup>
                 </div>
-
               </CardBody>
             </Card>
-
           </Col>
         </Row>
       </Container>
-    </div >
+    </div>
   );
 };
 
