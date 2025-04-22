@@ -176,6 +176,7 @@ const AddPatient = () => {
       financial: patient?.financial || false,
       attorney: patient?.attorney || "",
       familyMedical: patient?.familyMedical || "",
+      documents: patient?.documents || "",
     },
     validationSchema: Yup.object({
       fname: Yup.string().required("Please Enter a User Name"),
