@@ -491,7 +491,7 @@ const Calender = () => {
           <Row>
             <Col xs={12}>
               <Row>
-                <Col xl={2}>
+                <Col xl={4}>
                   <Select
                     isMulti
                     name="doctorListing"
@@ -540,10 +540,10 @@ const Calender = () => {
                     }}
                   />
                 </Col>
-                <Col xs={2}>
+                <Col xs={4}>
                   <Select
                     isMulti
-                    name="location"
+                    name="Cliniclocation"
                     placeholder=" Clinic Location"
                     options={clinics.map((location) => {
                       const address =
@@ -560,7 +560,7 @@ const Calender = () => {
                     })}
                     value={clinics
                       .filter((location) =>
-                        validation.values.location?.includes(location._id)
+                        validation.values.Cliniclocation?.includes(location._id)
                       )
                       .map((location) => {
                         const address =
@@ -577,7 +577,7 @@ const Calender = () => {
                       })}
                     onChange={(selected) => {
                       validation.setFieldValue(
-                        "location",
+                        "Cliniclocation",
                         selected ? selected.map((item) => item.value) : []
                       );
                     }}
@@ -595,7 +595,7 @@ const Calender = () => {
                     }}
                   />
                 </Col>
-                <Col xl={2}>
+                <Col xl={4}>
                   <Card className="card-h-100">
                     {/* <CardBody> */}
                     <button
