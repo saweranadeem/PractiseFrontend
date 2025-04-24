@@ -7,28 +7,27 @@ import DashboardCrm from "../pages/DashboardCrm";
 import DashboardEcommerce from "../pages/DashboardEcommerce";
 
 // Clinics
-import ListClinics from "../pages/Clinics/List"
-import CreateClinics from "../pages/Clinics/CreateClinics"
-import UpdateClinics from "../pages/Clinics/UpdateClinics"
+import ListClinics from "../pages/Clinics/List";
+import CreateClinics from "../pages/Clinics/CreateClinics";
+import UpdateClinics from "../pages/Clinics/UpdateClinics";
 
 // Users
-import ListUsers from "../pages/Users/ListUser"
-import CreateUsers from "../pages/Users/AddUser"
-import UpdateUser from "../pages/Users/UpdateUser"
+import ListUsers from "../pages/Users/ListUser";
+import CreateUsers from "../pages/Users/AddUser";
+import UpdateUser from "../pages/Users/UpdateUser";
 
 // Patients
-import ListPatients from "../pages/Patients/ListPatients"
-import CreatePatients from "../pages/Patients/AddPatient"
-import UpdatePatient from "../pages/Patients/UpdatePatient"
+import ListPatients from "../pages/Patients/ListPatients";
+import CreatePatients from "../pages/Patients/AddPatient";
+import UpdatePatient from "../pages/Patients/UpdatePatient";
 // Patients
-import ListDoctors from "../pages/Doctors/Doctors"
-import CreateDoctors from "../pages/Doctors/AddDoctors"
-import UpdateDoctors from "../pages/Doctors/UpdateDoctors"
+import ListDoctors from "../pages/Doctors/Doctors";
+import CreateDoctors from "../pages/Doctors/AddDoctors";
+import UpdateDoctors from "../pages/Doctors/UpdateDoctors";
 // CPT CODES
-import ListCPTS from "../pages/CPT/ListCPT"
-import CreateCPTS from "../pages/CPT/AddCPT"
-import UpdateCPTS from "../pages/CPT/UpdateCPT"
-
+import ListCPTS from "../pages/CPT/ListCPT";
+import CreateCPTS from "../pages/CPT/AddCPT";
+import UpdateCPTS from "../pages/CPT/UpdateCPT";
 
 import DashboardCrypto from "../pages/DashboardCrypto";
 import DashboardProject from "../pages/DashboardProject";
@@ -38,7 +37,6 @@ import DashboardJob from "../pages/DashboardJob/";
 //Calendar
 import Calendar from "../pages/Calendar/Maincalender";
 import MonthGrid from "../pages/Calendar/MonthGrid";
-
 
 // Email box
 import MailInbox from "../pages/EmailInbox";
@@ -59,12 +57,12 @@ import TaskList from "../pages/Tasks/TaskList";
 import Kanbanboard from "../pages/Tasks/KanbanBoard";
 
 //Transactions
-import Transactions from '../pages/Crypto/Transactions';
-import BuySell from '../pages/Crypto/BuySell';
-import CryproOrder from '../pages/Crypto/CryptoOrder';
-import MyWallet from '../pages/Crypto/MyWallet';
-import ICOList from '../pages/Crypto/ICOList';
-import KYCVerification from '../pages/Crypto/KYCVerification';
+import Transactions from "../pages/Crypto/Transactions";
+import BuySell from "../pages/Crypto/BuySell";
+import CryproOrder from "../pages/Crypto/CryptoOrder";
+import MyWallet from "../pages/Crypto/MyWallet";
+import ICOList from "../pages/Crypto/ICOList";
+import KYCVerification from "../pages/Crypto/KYCVerification";
 
 //Crm Pages
 import CrmCompanies from "../pages/Crm/CrmCompanies";
@@ -78,8 +76,8 @@ import InvoiceCreate from "../pages/Invoices/InvoiceCreate";
 import InvoiceDetails from "../pages/Invoices/InvoiceDetails";
 
 // Support Tickets
-import ListView from '../pages/SupportTickets/ListView';
-import TicketsDetails from '../pages/SupportTickets/TicketsDetails';
+import ListView from "../pages/SupportTickets/ListView";
+import TicketsDetails from "../pages/SupportTickets/TicketsDetails";
 
 // //Ecommerce Pages
 import EcommerceProducts from "../pages/Ecommerce/EcommerceProducts/index";
@@ -138,7 +136,7 @@ import UiRatings from "../pages/AdvanceUi/UiRatings/UiRatings";
 import UiHighlight from "../pages/AdvanceUi/UiHighlight/UiHighlight";
 
 // Widgets
-import Widgets from '../pages/Widgets/Index';
+import Widgets from "../pages/Widgets/Index";
 
 //Forms
 import BasicElements from "../pages/Forms/BasicElements/BasicElements";
@@ -156,8 +154,8 @@ import FormAdvanced from "../pages/Forms/FormAdvanced/FormAdvanced";
 import Select2 from "../pages/Forms/Select2/Select2";
 
 //Tables
-import BasicTables from '../pages/Tables/BasicTables/BasicTables';
-import ListTables from '../pages/Tables/ListTables/ListTables';
+import BasicTables from "../pages/Tables/BasicTables/BasicTables";
+import ListTables from "../pages/Tables/ListTables/ListTables";
 import ReactTable from "../pages/Tables/ReactTables";
 
 //Icon pages
@@ -172,38 +170,38 @@ import CryptoIcons from "../pages/Icons/CryptoIcons/CryptoIcons";
 import GoogleMaps from "../pages/Maps/GoogleMaps/GoogleMaps";
 
 //AuthenticationInner pages
-import BasicSignIn from '../pages/AuthenticationInner/Login/BasicSignIn';
-import CoverSignIn from '../pages/AuthenticationInner/Login/CoverSignIn';
-import BasicSignUp from '../pages/AuthenticationInner/Register/BasicSignUp';
+import BasicSignIn from "../pages/AuthenticationInner/Login/BasicSignIn";
+import CoverSignIn from "../pages/AuthenticationInner/Login/CoverSignIn";
+import BasicSignUp from "../pages/AuthenticationInner/Register/BasicSignUp";
 import CoverSignUp from "../pages/AuthenticationInner/Register/CoverSignUp";
-import BasicPasswReset from '../pages/AuthenticationInner/PasswordReset/BasicPasswReset';
+import BasicPasswReset from "../pages/AuthenticationInner/PasswordReset/BasicPasswReset";
 //pages
-import Starter from '../pages/Pages/Starter/Starter';
-import SimplePage from '../pages/Pages/Profile/SimplePage/SimplePage';
+import Starter from "../pages/Pages/Starter/Starter";
+import SimplePage from "../pages/Pages/Profile/SimplePage/SimplePage";
 // import Settings from '../pages/Pages/Profile/Settings/Settings';
-import Team from '../pages/Pages/Team/Team';
-import Timeline from '../pages/Pages/Timeline/Timeline';
-import Faqs from '../pages/Pages/Faqs/Faqs';
-import Pricing from '../pages/Pages/Pricing/Pricing';
-import Gallery from '../pages/Pages/Gallery/Gallery';
-import Maintenance from '../pages/Pages/Maintenance/Maintenance';
-import ComingSoon from '../pages/Pages/ComingSoon/ComingSoon';
-import SiteMap from '../pages/Pages/SiteMap/SiteMap';
-import SearchResults from '../pages/Pages/SearchResults/SearchResults';
+import Team from "../pages/Pages/Team/Team";
+import Timeline from "../pages/Pages/Timeline/Timeline";
+import Faqs from "../pages/Pages/Faqs/Faqs";
+import Pricing from "../pages/Pages/Pricing/Pricing";
+import Gallery from "../pages/Pages/Gallery/Gallery";
+import Maintenance from "../pages/Pages/Maintenance/Maintenance";
+import ComingSoon from "../pages/Pages/ComingSoon/ComingSoon";
+import SiteMap from "../pages/Pages/SiteMap/SiteMap";
+import SearchResults from "../pages/Pages/SearchResults/SearchResults";
 
-import CoverPasswReset from '../pages/AuthenticationInner/PasswordReset/CoverPasswReset';
-import BasicLockScreen from '../pages/AuthenticationInner/LockScreen/BasicLockScr';
-import CoverLockScreen from '../pages/AuthenticationInner/LockScreen/CoverLockScr';
-import BasicLogout from '../pages/AuthenticationInner/Logout/BasicLogout';
-import CoverLogout from '../pages/AuthenticationInner/Logout/CoverLogout';
-import BasicSuccessMsg from '../pages/AuthenticationInner/SuccessMessage/BasicSuccessMsg';
-import CoverSuccessMsg from '../pages/AuthenticationInner/SuccessMessage/CoverSuccessMsg';
-import BasicTwosVerify from '../pages/AuthenticationInner/TwoStepVerification/BasicTwosVerify';
-import CoverTwosVerify from '../pages/AuthenticationInner/TwoStepVerification/CoverTwosVerify';
-import Basic404 from '../pages/AuthenticationInner/Errors/Basic404';
-import Cover404 from '../pages/AuthenticationInner/Errors/Cover404';
-import Alt404 from '../pages/AuthenticationInner/Errors/Alt404';
-import Error500 from '../pages/AuthenticationInner/Errors/Error500';
+import CoverPasswReset from "../pages/AuthenticationInner/PasswordReset/CoverPasswReset";
+import BasicLockScreen from "../pages/AuthenticationInner/LockScreen/BasicLockScr";
+import CoverLockScreen from "../pages/AuthenticationInner/LockScreen/CoverLockScr";
+import BasicLogout from "../pages/AuthenticationInner/Logout/BasicLogout";
+import CoverLogout from "../pages/AuthenticationInner/Logout/CoverLogout";
+import BasicSuccessMsg from "../pages/AuthenticationInner/SuccessMessage/BasicSuccessMsg";
+import CoverSuccessMsg from "../pages/AuthenticationInner/SuccessMessage/CoverSuccessMsg";
+import BasicTwosVerify from "../pages/AuthenticationInner/TwoStepVerification/BasicTwosVerify";
+import CoverTwosVerify from "../pages/AuthenticationInner/TwoStepVerification/CoverTwosVerify";
+import Basic404 from "../pages/AuthenticationInner/Errors/Basic404";
+import Cover404 from "../pages/AuthenticationInner/Errors/Cover404";
+import Alt404 from "../pages/AuthenticationInner/Errors/Alt404";
+import Error500 from "../pages/AuthenticationInner/Errors/Error500";
 
 import BasicPasswCreate from "../pages/AuthenticationInner/PasswordCreate/BasicPasswCreate";
 import CoverPasswCreate from "../pages/AuthenticationInner/PasswordCreate/CoverPasswCreate";
@@ -254,8 +252,8 @@ import CompaniesList from "../pages/Jobs/CompaniesList";
 import OnePage from "../pages/Landing/OnePage";
 import NFTLanding from "../pages/Landing/NFTLanding";
 
-import PrivecyPolicy from '../pages/Pages/PrivacyPolicy';
-import TermsCondition from '../pages/Pages/TermsCondition';
+import PrivecyPolicy from "../pages/Pages/PrivacyPolicy";
+import TermsCondition from "../pages/Pages/TermsCondition";
 import JobLanding from "../pages/Job_Landing/Job";
 
 // User Profile
@@ -271,7 +269,7 @@ import SlopeCharts from "../pages/Charts/ApexCharts/SlopeCharts";
 import BlogListView from "../pages/Pages/Blogs/ListView";
 import BlogGridView from "../pages/Pages/Blogs/GridView";
 import PageBlogOverview from "../pages/Pages/Blogs/Overview";
-import Settings from "../pages/Settings/Settings"
+import Settings from "../pages/Settings/Settings";
 
 const authProtectedRoutes = [
   { path: "/dashboard-analytics", component: <DashboardAnalytics /> },
@@ -287,20 +285,31 @@ const authProtectedRoutes = [
   { path: "/apps-calendar", component: <Calendar /> },
   { path: "/apps-calendar-month-grid", component: <MonthGrid /> },
   { path: "/apps-ecommerce-products", component: <EcommerceProducts /> },
-  { path: "/apps-ecommerce-product-details/:_id", component: <EcommerceProductDetail /> },
-  { path: "/apps-ecommerce-product-details", component: <EcommerceProductDetail /> },
+  {
+    path: "/apps-ecommerce-product-details/:_id",
+    component: <EcommerceProductDetail />,
+  },
+  {
+    path: "/apps-ecommerce-product-details",
+    component: <EcommerceProductDetail />,
+  },
   { path: "/apps-ecommerce-add-product", component: <EcommerceAddProduct /> },
   { path: "/apps-ecommerce-orders", component: <EcommerceOrders /> },
-  { path: "/apps-ecommerce-order-details", component: <EcommerceOrderDetail /> },
+  {
+    path: "/apps-ecommerce-order-details",
+    component: <EcommerceOrderDetail />,
+  },
   { path: "/apps-ecommerce-customers", component: <EcommerceCustomers /> },
   { path: "/apps-ecommerce-cart", component: <EcommerceCart /> },
   { path: "/apps-ecommerce-checkout", component: <EcommerceCheckout /> },
   { path: "/apps-ecommerce-sellers", component: <EcommerceSellers /> },
-  { path: "/apps-ecommerce-seller-details", component: <EcommerceSellerDetail /> },
+  {
+    path: "/apps-ecommerce-seller-details",
+    component: <EcommerceSellerDetail />,
+  },
 
   { path: "/apps-file-manager", component: <FileManager /> },
   { path: "/apps-todo", component: <ToDoList /> },
-
 
   //Chat
   { path: "/apps-chat", component: <Chat /> },
@@ -319,18 +328,17 @@ const authProtectedRoutes = [
   { path: "/patients-list", component: <ListPatients /> },
   { path: "/patient-create", component: <CreatePatients /> },
   { path: "/patient-edit/:id", component: <UpdatePatient /> },
-   //Doctors
-   { path: "/doctors-list", component: <ListDoctors /> },
-   { path: "/doctor-create", component: <CreateDoctors /> },
-   { path: "/doctor-edit/:id", component: <UpdateDoctors /> },
-     //CPT Codes
-     { path: "/cpt-list", component: <ListCPTS /> },
-     { path: "/cpt-create", component: <CreateCPTS /> },
-     { path: "/cpt-edit/:id", component: <UpdateCPTS /> },
+  //Doctors
+  { path: "/doctors-list", component: <ListDoctors /> },
+  { path: "/doctor-create", component: <CreateDoctors /> },
+  { path: "/doctor-edit/:id", component: <UpdateDoctors /> },
+  //CPT Codes
+  { path: "/cpt-list", component: <ListCPTS /> },
+  { path: "/cpt-create", component: <CreateCPTS /> },
+  { path: "/cpt-edit/:id", component: <UpdateCPTS /> },
 
-    //Settings
-    { path: "/settings", component: <Settings /> },
-
+  //Settings
+  { path: "/settings", component: <Settings /> },
 
   //EMail
   { path: "/apps-mailbox", component: <MailInbox /> },
@@ -407,7 +415,6 @@ const authProtectedRoutes = [
 
   { path: "/charts-chartjs", component: <ChartsJs /> },
   { path: "/charts-echarts", component: <Echarts /> },
-
 
   // Base Ui
   { path: "/ui-alerts", component: <UiAlerts /> },
@@ -506,7 +513,6 @@ const authProtectedRoutes = [
   { path: "/apps-job-companies-lists", component: <CompaniesList /> },
   { path: "/apps-job-categories", component: <JobCategories /> },
 
-
   //User Profile
   { path: "/profile", component: <UserProfile /> },
 
@@ -556,7 +562,6 @@ const publicRoutes = [
   { path: "/auth-pass-change-basic", component: <BasicPasswCreate /> },
   { path: "/auth-pass-change-cover", component: <CoverPasswCreate /> },
   { path: "/auth-offline", component: <Offlinepage /> },
-
 ];
 
 export { authProtectedRoutes, publicRoutes };

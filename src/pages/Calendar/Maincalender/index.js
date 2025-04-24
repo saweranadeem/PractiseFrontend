@@ -53,7 +53,6 @@ import {
 import { createSelector } from "reselect";
 import axios from "axios";
 import { api } from "../../../config";
-
 const Calender = () => {
   const dispatch = useDispatch();
   const [event, setEvent] = useState({});
@@ -65,10 +64,10 @@ const Calender = () => {
   const [isEditButton, setIsEditButton] = useState(true);
   const [upcommingevents, setUpcommingevents] = useState([]);
   const [cptCodes, setCptCodes] = useState([]);
+  const [clinics, setClinics] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [patients, setPatients] = useState([]);
   const [appointments, setAppointments] = useState([]);
-
 
   const selectLayoutState = (state) => state.Calendar;
   const calendarDataProperties = createSelector(selectLayoutState, (state) => ({
@@ -84,9 +83,9 @@ const Calender = () => {
   useEffect(() => {
     dispatch(onGetEvents());
     dispatch(onGetCategories());
-    new Draggable(document.getElementById("external-events"), {
-      itemSelector: ".external-event",
-    });
+    // new Draggable(document.getElementById("external-events"), {
+    //   itemSelector: ".external-event",
+    // });
   }, [dispatch]);
 
   useEffect(() => {
@@ -123,6 +122,7 @@ const Calender = () => {
   };
   const fetchDoctors = async () => {
     const response = await axios.get(`${api.API_URL}/doctors`);
+    // alert(JSON.stringify(response));
     setDoctors(response.doctors);
   };
   const fetchPatients = async () => {
@@ -133,7 +133,21 @@ const Calender = () => {
     const response = await axios.get(`${api.API_URL}/appointments`);
     setAppointments(response.events);
   };
+
+  const fetchClinics = async () => {
+    try {
+      const response = await axios.get(`${api.API_URL}/clinic`);
+      setClinics(response.providers);
+      // alert(JSON.stringify(response.providers));
+
+      // alert(JSON.stringify(clinics));
+    } catch (err) {
+      setError("Failed to fetch clinics");
+    }
+  };
+
   useEffect(() => {
+    fetchClinics();
     fetchCpt();
     fetchDoctors();
     fetchPatients();
@@ -201,7 +215,7 @@ const Calender = () => {
   };
 
   const handleEventClick = (arg) => {
-    console.log(arg.event)
+    console.log(arg.event);
     const event = arg.event;
 
     const st_date = event.start;
@@ -239,15 +253,14 @@ const Calender = () => {
     toggle();
   };
 
-  const handleDeleteEvent = async(title) => {
-    const response=await axios.delete(`${api.API_URL}/appointments/${title}`)
-    
-    if(response.success){
+  const handleDeleteEvent = async (title) => {
+    const response = await axios.delete(`${api.API_URL}/appointments/${title}`);
+
+    if (response.success) {
       setDeleteModal(false);
       toggle();
       fetchEvents();
     }
-
   };
 
   const calculateTotalMinutes = (start, end) => {
@@ -267,7 +280,10 @@ const Calender = () => {
       const end = endH * 60 + endM;
 
       if (start > end) {
-        validation.setFieldError("endTime", "End time must be after start time");
+        validation.setFieldError(
+          "endTime",
+          "End time must be after start time"
+        );
         validation.setFieldValue("totalMinutes", "");
       } else {
         validation.setFieldError("endTime", "");
@@ -452,38 +468,145 @@ const Calender = () => {
     validation.setFieldValue(field, selectedOption ? selectedOption.value : "");
   };
 
-  const formattedAppointments = appointments.map(app => ({
+  const formattedAppointments = appointments.map((app) => ({
     title: app.eventName || "No Name",
     start: app.appointmentDate,
-    allDay: true
+    allDay: true,
   }));
 
-  {console.log(event)}
+  {
+    console.log(event);
+  }
   return (
     <React.Fragment>
-    <DeleteModal
-  show={deleteModal}
-  onDeleteClick={() => handleDeleteEvent(event.title)}
-  onCloseClick={() => setDeleteModal(false)}
-/>
+      <DeleteModal
+        show={deleteModal}
+        onDeleteClick={() => handleDeleteEvent(event.title)}
+        onCloseClick={() => setDeleteModal(false)}
+      />
       <div className="page-content">
+        {/* {JSON.stringify(clinics)} */}
         <Container fluid>
           <BreadCrumb title="Calendar" pageTitle="Apps" />
           <Row>
             <Col xs={12}>
               <Row>
-                <Col xl={3}>
-                  <Card className="card-h-100">
-                    <CardBody>
-                      <button
-                        className="btn btn-primary w-100"
-                        id="btn-new-event"
-                        onClick={toggle}
-                      >
-                        <i className="mdi mdi-plus"></i> Create New Event
-                      </button>
+                <Col xl={2}>
+                  <Select
+                    isMulti
+                    name="doctorListing"
+                    placeholder="Team Members"
+                    options={doctors.map((doctor) => ({
+                      value: doctor._id,
+                      label: `${doctor.provider_fname} ${
+                        doctor.provider_lname || ""
+                      }`,
+                    }))}
+                    value={doctors
+                      .filter((doctor) =>
+                        validation.values.doctorListing?.includes(doctor._id)
+                      )
+                      .map((doctor) => ({
+                        value: doctor._id,
+                        label: `${doctor.provider_fname} ${
+                          doctor.provider_lname || ""
+                        }`,
+                      }))}
+                    onChange={(selected) => {
+                      validation.setFieldValue(
+                        "doctorListing",
+                        selected ? selected.map((item) => item.value) : []
+                      );
+                    }}
+                    onBlur={validation.handleBlur}
+                    classNamePrefix="react-select"
+                    styles={{
+                      multiValue: (base) => ({
+                        ...base,
+                        backgroundColor: "#003366", // Navy blue background
+                      }),
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        color: "white", // White text
+                      }),
+                      // multiValueRemove: (base) => ({
+                      //   ...base,
+                      //   color: "white",
+                      //   ":hover": {
+                      //     backgroundColor: "#003366",
+                      //     color: "white",
+                      //   },
+                      // }),
+                    }}
+                  />
+                </Col>
+                <Col xs={2}>
+                  <Select
+                    isMulti
+                    name="location"
+                    placeholder=" Clinic Location"
+                    options={clinics.map((location) => {
+                      const address =
+                        location.addresses && location.addresses["1"]
+                          ? location.addresses["1"]
+                          : {};
 
-                      <div id="external-events">
+                      return {
+                        value: location._id,
+                        label: `${address.street || "No Street"}, ${
+                          address.city || ""
+                        }, ${address.state || ""}`,
+                      };
+                    })}
+                    value={clinics
+                      .filter((location) =>
+                        validation.values.location?.includes(location._id)
+                      )
+                      .map((location) => {
+                        const address =
+                          location.addresses && location.addresses["1"]
+                            ? location.addresses["1"]
+                            : {};
+
+                        return {
+                          value: location._id,
+                          label: `${address.street || "No Street"}, ${
+                            address.city || ""
+                          }, ${address.state || ""}`,
+                        };
+                      })}
+                    onChange={(selected) => {
+                      validation.setFieldValue(
+                        "location",
+                        selected ? selected.map((item) => item.value) : []
+                      );
+                    }}
+                    onBlur={validation.handleBlur}
+                    classNamePrefix="react-select"
+                    styles={{
+                      multiValue: (base) => ({
+                        ...base,
+                        backgroundColor: "#003366",
+                      }),
+                      multiValueLabel: (base) => ({
+                        ...base,
+                        color: "white",
+                      }),
+                    }}
+                  />
+                </Col>
+                <Col xl={2}>
+                  <Card className="card-h-100">
+                    {/* <CardBody> */}
+                    <button
+                      className="btn btn-primary w-100"
+                      id="btn-new-event"
+                      onClick={toggle}
+                    >
+                      <i className="mdi mdi-plus"></i> Create New Event
+                    </button>
+
+                    {/* <div id="external-events">
                         <br />
                         <p className="text-muted">
                           Drag and drop your event or click in the calendar
@@ -502,43 +625,11 @@ const Calender = () => {
                               {category.title}
                             </div>
                           ))}
-                      </div>
-                    </CardBody>
-                  </Card>
-                </Col>
-                <Col xl={9}>
-                  <Card className="card-h-100">
-                    <CardBody>
-                      <FullCalendar
-                        plugins={[
-                          BootstrapTheme,
-                          dayGridPlugin,
-                          interactionPlugin,
-                          listPlugin,
-                        ]}
-                        initialView="dayGridMonth"
-                        slotDuration={"00:15:00"}
-                        handleWindowResize={true}
-                        themeSystem="bootstrap"
-                        headerToolbar={{
-                          left: "prev,next today",
-                          center: "title",
-                          right:
-                            "dayGridMonth,dayGridWeek,dayGridDay,listWeek",
-                        }}
-                        events={formattedAppointments}
-                        editable={true}
-                        droppable={true}
-                        selectable={true}
-                        dateClick={handleDateClick}
-                        eventClick={handleEventClick}
-                        drop={onDrop}
-                      />
-                    </CardBody>
+                      </div> */}
+                    {/* </CardBody> */}
                   </Card>
                 </Col>
               </Row>
-
               <div style={{ clear: "both" }}></div>
 
               <Modal isOpen={modal} id="event-modal" centered>
@@ -631,7 +722,9 @@ const Calender = () => {
                       <p>Appointment Details</p>
                       <Col xs={12}>
                         <div className="mb-3">
-                          <Label className="form-label" htmlFor="eventName">Event Name</Label>
+                          <Label className="form-label" htmlFor="eventName">
+                            Event Name
+                          </Label>
                           <Input
                             type="text"
                             name="eventName"
@@ -640,10 +733,14 @@ const Calender = () => {
                             onChange={validation.handleChange}
                             onBlur={validation.handleBlur}
                             placeholder="Enter Event Name"
-                            invalid={validation.touched.eventName && !!validation.errors.eventName}
+                            invalid={
+                              validation.touched.eventName &&
+                              !!validation.errors.eventName
+                            }
                           />
 
-                          {validation.touched.eventName && validation.errors.eventName ? (
+                          {validation.touched.eventName &&
+                          validation.errors.eventName ? (
                             <FormFeedback type="invalid" className="d-block">
                               {validation.errors.eventName}
                             </FormFeedback>
@@ -675,11 +772,10 @@ const Calender = () => {
                             classNamePrefix="react-select"
                           />
                           {validation.touched.doctor &&
-                            validation.errors.doctor ? (
+                          validation.errors.doctor ? (
                             <FormFeedback type="invalid" className="d-block">
                               {validation.errors.doctor}
                             </FormFeedback>
-
                           ) : null}
                         </div>
                       </Col>
@@ -709,7 +805,7 @@ const Calender = () => {
                               classNamePrefix="react-select"
                             />
                             {validation.touched.patient &&
-                              validation.errors.patient ? (
+                            validation.errors.patient ? (
                               <FormFeedback type="invalid" className="d-block">
                                 {validation.errors.patient}
                               </FormFeedback>
@@ -786,7 +882,7 @@ const Calender = () => {
                                 validation.setFieldValue(
                                   "defaultDate",
                                   date_r(date[0]) +
-                                  (date[1] ? " to " + date_r(date[1]) : "")
+                                    (date[1] ? " to " + date_r(date[1]) : "")
                                 );
                               }}
                             />
@@ -795,7 +891,7 @@ const Calender = () => {
                             </span>
                           </div>
                           {validation.touched.defaultDate &&
-                            validation.errors.defaultDate ? (
+                          validation.errors.defaultDate ? (
                             <FormFeedback type="invalid" className="d-block">
                               {validation.errors.defaultDate}
                             </FormFeedback>
@@ -825,7 +921,7 @@ const Calender = () => {
                             value={validation.values.startTime || ""}
                           />
                           {validation.touched.startTime &&
-                            validation.errors.startTime ? (
+                          validation.errors.startTime ? (
                             <FormFeedback type="invalid" className="d-block">
                               {validation.errors.startTime}
                             </FormFeedback>
@@ -855,7 +951,7 @@ const Calender = () => {
                             value={validation.values.endTime || ""}
                           />
                           {validation.touched.endTime &&
-                            validation.errors.endTime ? (
+                          validation.errors.endTime ? (
                             <FormFeedback type="invalid" className="d-block">
                               {validation.errors.endTime}
                             </FormFeedback>
@@ -895,7 +991,7 @@ const Calender = () => {
                               value={validation.values.location || ""}
                             />
                             {validation.touched.location &&
-                              validation.errors.location ? (
+                            validation.errors.location ? (
                               <FormFeedback type="invalid" className="d-block">
                                 {validation.errors.location}
                               </FormFeedback>
@@ -928,6 +1024,38 @@ const Calender = () => {
                   </Form>
                 </ModalBody>
               </Modal>
+            </Col>
+          </Row>
+          <Row>
+            <Col xl={12}>
+              <Card className="card-h-100">
+                <CardBody>
+                  <FullCalendar
+                    plugins={[
+                      BootstrapTheme,
+                      dayGridPlugin,
+                      interactionPlugin,
+                      listPlugin,
+                    ]}
+                    initialView="dayGridMonth"
+                    slotDuration={"00:15:00"}
+                    handleWindowResize={true}
+                    themeSystem="bootstrap"
+                    headerToolbar={{
+                      left: "prev,next today",
+                      center: "title",
+                      right: "dayGridMonth,dayGridWeek,dayGridDay,listWeek",
+                    }}
+                    events={formattedAppointments}
+                    editable={true}
+                    droppable={true}
+                    selectable={true}
+                    dateClick={handleDateClick}
+                    eventClick={handleEventClick}
+                    drop={onDrop}
+                  />
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Container>

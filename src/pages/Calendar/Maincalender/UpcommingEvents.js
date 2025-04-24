@@ -2,7 +2,6 @@ import React from "react";
 import { Card, CardBody } from "reactstrap";
 
 function UpcommingEvents(props) {
-  
   const getTime = (params) => {
     params = new Date(params);
     if (params.getHours() != null) {
@@ -56,7 +55,11 @@ function UpcommingEvents(props) {
   if (e_dt === "Invalid Date" || e_dt === undefined) {
     e_dt = null;
   } else {
-    const newDate = new Date(e_dt).toLocaleDateString('en', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    const newDate = new Date(e_dt).toLocaleDateString("en", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
     e_dt = new Date(newDate)
       .toLocaleDateString("en-GB", {
         day: "numeric",
@@ -76,7 +79,11 @@ function UpcommingEvents(props) {
   if (startDate === "Invalid Date" || startDate === undefined) {
     startDate = null;
   } else {
-    const newDate = new Date(startDate).toLocaleDateString('en', { year: 'numeric', month: 'numeric', day: 'numeric' });
+    const newDate = new Date(startDate).toLocaleDateString("en", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    });
     startDate = new Date(newDate)
       .toLocaleDateString("en-GB", {
         day: "numeric",
@@ -103,7 +110,9 @@ function UpcommingEvents(props) {
         <div className="d-flex mb-3">
           <div className="flex-grow-1">
             <i
-              className={"mdi mdi-checkbox-blank-circle me-2 text-" + category[1]}
+              className={
+                "mdi mdi-checkbox-blank-circle me-2 text-" + category[1]
+              }
             ></i>
             <span className="fw-medium">
               {startDate} {end_dt}

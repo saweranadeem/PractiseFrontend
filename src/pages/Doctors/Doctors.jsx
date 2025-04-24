@@ -32,6 +32,7 @@ const List = () => {
         await axios.delete(`${api.API_URL}/doctors/${id}`);
         setSearchTable(searchTable.filter((clinic) => clinic._id !== id));
       } catch (error) {
+        // console.log("error in delete doctor", error);
         alert("Failed to delete doctor");
       }
     }
@@ -53,19 +54,19 @@ const List = () => {
       name: "Actions",
       cell: (row) => (
         <div className="d-flex gap-2">
-        <button
-          onClick={() => handleUpdate(row._id)}
-          className="btn btn-primary"
-        >
-          U
-        </button>
-        <button
-          onClick={() => handleDelete(row._id)}
-          className="btn btn-danger"
-        >
-          D
-        </button>
-      </div>
+          <button
+            onClick={() => handleUpdate(row._id)}
+            className="btn btn-primary"
+          >
+            U
+          </button>
+          <button
+            onClick={() => handleDelete(row._id)}
+            className="btn btn-danger"
+          >
+            D
+          </button>
+        </div>
       ),
     },
   ];
