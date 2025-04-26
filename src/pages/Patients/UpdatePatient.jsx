@@ -246,11 +246,9 @@ const AddPatient = () => {
       group_number: patient?.group_number || "",
       relation_with_subscriber: patient?.relation_with_subscriber || "",
       subscriber_name: patient?.subscriber_name || "",
-      subscriber_dob: patient?.subscriber_dob
-        ? patient.subscriber_dob.split("T")[0]
-        : "",
-      start_date: patient?.start_date ? patient.start_date.split("T")[0] : "",
-      end_date: patient?.end_date ? patient.end_date.split("T")[0] : "",
+      subscriber_dob: patient?.subscriber_dob || "",
+      start_date: patient?.start_date || "",
+      end_date: patient?.end_date || "",
       additional_notes: patient?.additional_notes || "",
       insurance_certificate: patient?.insurance_certificate || "",
       pcp: patient?.pcp || "",
@@ -301,7 +299,12 @@ const AddPatient = () => {
       };
 
       try {
-        await axios.put(`${api.API_URL}/patient/${id}`, updatedPatient);
+        const response = await axios.put(
+          `${api.API_URL}/patient/${id}`,
+          updatedPatient
+        );
+        // alert(JSON.stringify(response.patient));
+        console.error(response.patient);
         history("/patients-list");
       } catch (err) {
         console.error("Update failed:", err);
@@ -1201,7 +1204,11 @@ const AddPatient = () => {
                                   id={`subscriber-dob-${tab.id}`}
                                   name="subscriber_dob"
                                   value={
-                                    insuranceData[tab.id]?.subscriber_dob || ""
+                                    insuranceData[tab.id]?.subscriber_dob
+                                      ? insuranceData[
+                                          tab.id
+                                        ].subscriber_dob.split("T")[0]
+                                      : ""
                                   }
                                   onChange={(e) =>
                                     handleInsuranceChange(tab.id, e)
@@ -1220,7 +1227,11 @@ const AddPatient = () => {
                                   id={`start-date-${tab.id}`}
                                   name="start_date"
                                   value={
-                                    insuranceData[tab.id]?.start_date || ""
+                                    insuranceData[tab.id]?.start_date
+                                      ? insuranceData[tab.id].start_date.split(
+                                          "T"
+                                        )[0]
+                                      : ""
                                   }
                                   onChange={(e) =>
                                     handleInsuranceChange(tab.id, e)
@@ -1238,7 +1249,13 @@ const AddPatient = () => {
                                   className="form-control"
                                   id={`end-date-${tab.id}`}
                                   name="end_date"
-                                  value={insuranceData[tab.id]?.end_date || ""}
+                                  value={
+                                    insuranceData[tab.id]?.end_date
+                                      ? insuranceData[tab.id].end_date.split(
+                                          "T"
+                                        )[0]
+                                      : ""
+                                  }
                                   onChange={(e) =>
                                     handleInsuranceChange(tab.id, e)
                                   }

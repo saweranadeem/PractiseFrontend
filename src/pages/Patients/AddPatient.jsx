@@ -125,7 +125,7 @@ const AddPatient = () => {
   });
   // Add these functions to manage insurance tabs
   const addNewInsuranceTab = () => {
-    const newTabId = (tabs.length + 1).toString();
+    const newTabId = (insuranceTabs.length + 1).toString();
 
     const newTabName = `Insurance ${insuranceTabs.length + 1}`;
 
