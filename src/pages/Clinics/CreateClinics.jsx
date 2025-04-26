@@ -668,7 +668,8 @@ const EcommerceAddProduct = () => {
 
                   <div className="d-flex justify-content-end mt-3">
                     <Button color="primary" onClick={addNewTab}>
-                      Add another address
+                     
+                     
                     </Button>
                   </div>
                 </CardBody>

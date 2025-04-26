@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { json, Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Select from "react-select";
 
@@ -55,7 +55,7 @@ import axios from "axios";
 import { api } from "../../../config";
 const Calender = () => {
   const dispatch = useDispatch();
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState(null);
   const [modal, setModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
@@ -230,7 +230,7 @@ const Calender = () => {
         : date_r(st_date) + " to " + date_r(ed_date);
 
     setEvent({
-      id: event.id,
+      id: event._id,
       title: event.title,
       doctor: event._def.extendedProps.doctorId || "",
       patient: event.title || "",
@@ -298,6 +298,7 @@ const Calender = () => {
   const validation = useFormik({
     enableReinitialize: true,
     initialValues: {
+      id: (event && event._id) || "",
       doctor: (event && event.doctor) || "",
       patient: (event && event.title) || "",
       cpt: (event && event.cpt) || "",
@@ -331,7 +332,7 @@ const Calender = () => {
       );
 
       const payload = {
-        _id: isEdit ? event._id : event._id, // Use existing _id for edits, generate new ObjectId for creates
+        id: isEdit ? event._id : Math.floor(Math.random() * 1000), // Generate a random ID for new events
         doctorId: values.doctor,
         patientId: values.patient,
         cptCode: values.cpt,
@@ -363,7 +364,8 @@ const Calender = () => {
         axios
           .post(`${api.API_URL}/appointments`, payload)
           .then((response) => {
-            console.log("Appointment created:", response.data);
+            console.log("Appointment created:", response);
+            // alert(JSON.stringify(response.event));
             fetchEvents();
           })
           .catch((error) => {
@@ -477,6 +479,8 @@ const Calender = () => {
   {
     console.log(event);
   }
+  // alert(event)
+  // alert(JSON.stringify(event));
   return (
     <React.Fragment>
       <DeleteModal

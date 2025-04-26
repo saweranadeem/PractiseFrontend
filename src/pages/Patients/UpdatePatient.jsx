@@ -21,7 +21,7 @@ import {
 } from "reactstrap";
 import { FaTimes } from "react-icons/fa";
 import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-
+import classnames from "classnames";
 const states = [
   "Alabama",
   "Alaska",
@@ -106,12 +106,81 @@ const AddPatient = () => {
   const [patient, setPatient] = useState(null);
   const { id } = useParams();
 
+  const [insuranceTabs, setInsuranceTabs] = useState([
+    { id: "1", name: "Insurance 1" },
+  ]);
+  const [insuranceActiveTab, setInsuranceActiveTab] = useState("1");
+  const [insuranceData, setInsuranceData] = useState({
+    1: {
+      insurance_sequence: "",
+      primary_insurance_provider: "",
+      insurance_plan_name: "",
+      policy_number: "",
+      group_number: "",
+      relation_with_subscriber: "",
+      subscriber_name: "",
+      subscriber_dob: "",
+      start_date: "",
+      end_date: "",
+      additional_notes: "",
+    },
+  });
+
+  const addNewInsuranceTab = () => {
+    const newTabId = (insuranceTabs.length + 1).toString();
+    const newTabName = `Insurance ${insuranceTabs.length + 1}`;
+
+    setInsuranceTabs([...insuranceTabs, { id: newTabId, name: newTabName }]);
+
+    setInsuranceData({
+      ...insuranceData,
+      [newTabId]: {
+        insurance_sequence: "",
+        primary_insurance_provider: "",
+        insurance_plan_name: "",
+        policy_number: "",
+        group_number: "",
+        relation_with_subscriber: "",
+        subscriber_name: "",
+        subscriber_dob: "",
+        start_date: "",
+        end_date: "",
+        additional_notes: "",
+      },
+    });
+
+    setInsuranceActiveTab(newTabId);
+  };
+
+  const removeInsuranceTab = (tabId) => {
+    if (insuranceTabs.length <= 1) return;
+
+    const filteredTabs = insuranceTabs.filter((tab) => tab.id !== tabId);
+    setInsuranceTabs(filteredTabs);
+
+    const { [tabId]: _, ...remainingData } = insuranceData;
+    setInsuranceData(remainingData);
+
+    setInsuranceActiveTab(filteredTabs[0].id);
+  };
+
+  const handleInsuranceChange = (tabId, e) => {
+    const { name, value } = e.target;
+    setInsuranceData((prev) => ({
+      ...prev,
+      [tabId]: {
+        ...prev[tabId],
+        [name]: value,
+      },
+    }));
+  };
+
   const fetchPatient = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${api.API_URL}/patient/${id}`);
-      //   alert(JSON.stringify(response.patient));
       setPatient(response.patient);
+
       if (response.patient.medicalTags) {
         setMedicalTags(response.patient.medicalTags);
       }
@@ -121,13 +190,28 @@ const AddPatient = () => {
       if (response.patient.surgeryTags) {
         setSurgeryTags(response.patient.surgeryTags);
       }
+
+      if (response.patient.insurance) {
+        const insuranceEntries = Object.entries(response.patient.insurance);
+        const initialTabs = insuranceEntries.map(([key, value], index) => ({
+          id: key,
+          name: `Insurance ${index + 1}`,
+        }));
+
+        setInsuranceTabs(
+          initialTabs.length > 0
+            ? initialTabs
+            : [{ id: "1", name: "Insurance 1" }]
+        );
+        setInsuranceData(response.patient.insurance);
+        setInsuranceActiveTab(initialTabs[0]?.id || "1");
+      }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchPatient();
   }, []);
@@ -204,20 +288,7 @@ const AddPatient = () => {
         relation_to_patient: values.relation_to_patient,
         emergancy_contact_number: values.emergancy_contact_number,
         emergancy_contact_email: values.emergancy_contact_email,
-        insurance_sequence: values.insurance_sequence,
-        primary_insurance_provider: values.primary_insurance_provider,
-        insurance_plan_name: values.insurance_plan_name,
-        policy_number: values.policy_number,
-        group_number: values.group_number,
-        relation_with_subscriber: values.relation_with_subscriber,
-        policy_number: values.policy_number,
-        group_number: values.group_number,
-        relation_with_subscriber: values.relation_with_subscriber,
-        subscriber_name: values.subscriber_name,
-        subscriber_dob: values.subscriber_dob,
-        start_date: values.start_date,
-        end_date: values.end_date,
-        additional_notes: values.additional_notes,
+        insurance: insuranceData,
         insurance_certificate: values.insurance_certificate,
         medicalTags: medicalTags,
         allergyTags: allergyTags,
@@ -228,6 +299,7 @@ const AddPatient = () => {
         documents: values.documents,
         familyMedical: values.familyMedical,
       };
+
       try {
         await axios.put(`${api.API_URL}/patient/${id}`, updatedPatient);
         history("/patients-list");
@@ -926,11 +998,28 @@ const AddPatient = () => {
               <Card>
                 <CardHeader>
                   <Nav className="nav-tabs-custom card-header-tabs border-bottom-0">
-                    <NavItem>
-                      <NavLink style={{ cursor: "pointer" }}>
-                        Insurance Information
-                      </NavLink>
-                    </NavItem>
+                    {insuranceTabs.map((tab) => (
+                      <NavItem key={tab.id}>
+                        <NavLink
+                          style={{ cursor: "pointer" }}
+                          className={classnames({
+                            active: insuranceActiveTab === tab.id,
+                          })}
+                          onClick={() => setInsuranceActiveTab(tab.id)}
+                        >
+                          {tab.name}
+                          {insuranceTabs.length > 1 && (
+                            <FaTimes
+                              style={{ marginLeft: "8px", cursor: "pointer" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeInsuranceTab(tab.id);
+                              }}
+                            />
+                          )}
+                        </NavLink>
+                      </NavItem>
+                    ))}
                   </Nav>
                   <div style={{ cursor: "pointer" }} onClick={toggleCard}>
                     {isOpen ? <FaChevronUp /> : <FaChevronDown />}
@@ -939,381 +1028,256 @@ const AddPatient = () => {
 
                 {isOpen && (
                   <CardBody>
-                    <Row>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label
-                            className="form-label"
-                            htmlFor="insurance-sequence-input"
-                          >
-                            Insurance Sequence:
-                          </label>
-                          <Input
-                            type="select"
-                            className="form-control"
-                            id="insurance-sequence-input"
-                            name="insurance_sequence"
-                            value={validation.values.insurance_sequence || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.insurance_sequence &&
-                              validation.touched.insurance_sequence
-                                ? true
-                                : false
-                            }
-                          >
-                            <option value="">Select Insurance Sequence</option>
-                            <option value="Primary">Primary</option>
-                            <option value="Secondary">Secondary</option>
-                            <option value="Tertiary">Tertiary</option>
-                            <option value="Other">Other</option>
-                          </Input>
-                          {validation.errors.insurance_sequence &&
-                          validation.touched.insurance_sequence ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.insurance_sequence}
-                            </FormFeedback>
-                          ) : null}
-                        </div>
-                      </Col>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label
-                            className="form-label"
-                            htmlFor="manufacturer-name-input"
-                          >
-                            Primary Insurance Provider:
-                          </label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            id="manufacturer-name-input"
-                            name="primary_insurance_provider"
-                            placeholder="Enter Insurance Provider"
-                            value={
-                              validation.values.primary_insurance_provider || ""
-                            }
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.primary_insurance_provider &&
-                              validation.touched.primary_insurance_provider
-                                ? true
-                                : false
-                            }
-                          />
-                          {validation.errors.primary_insurance_provider &&
-                          validation.touched.primary_insurance_provider ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.primary_insurance_provider}
-                            </FormFeedback>
-                          ) : null}
-                        </div>
-                      </Col>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label
-                            className="form-label"
-                            htmlFor="manufacturer-name-input"
-                          >
-                            Insurance Plan Name
-                          </label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            id="manufacturer-name-input"
-                            name="insurance_plan_name"
-                            placeholder="Enter Insurance Plan name"
-                            value={validation.values.insurance_plan_name || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.insurance_plan_name &&
-                              validation.touched.insurance_plan_name
-                                ? true
-                                : false
-                            }
-                          />
-                          {validation.errors.insurance_plan_name &&
-                          validation.touched.insurance_plan_name ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.insurance_plan_name}
-                            </FormFeedback>
-                          ) : null}
-                        </div>
-                      </Col>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label
-                            className="form-label"
-                            htmlFor="manufacturer-brand-input"
-                          >
-                            Policy Number
-                          </label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            id="manufacturer-brand-input"
-                            name="policy_number"
-                            placeholder="Enter Policy Number"
-                            value={validation.values.policy_number || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.policy_number &&
-                              validation.touched.policy_number
-                                ? true
-                                : false
-                            }
-                          />
-                          {validation.errors.policy_number &&
-                          validation.touched.policy_number ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.policy_number}
-                            </FormFeedback>
-                          ) : null}
-                        </div>
-                      </Col>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            Group Number
-                          </label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            id="city"
-                            name="group_number"
-                            placeholder="Enter Group number"
-                            value={validation.values.group_number || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.group_number &&
-                              validation.touched.group_number
-                            }
-                          />
-                          {validation.errors.group_number &&
-                            validation.touched.group_number && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.group_number}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <Col lg={4}>
-                        <div className="mb-3">
-                          <label
-                            className="form-label"
-                            htmlFor="insurance-sequence-input"
-                          >
-                            Relation with Subscriber:
-                          </label>
-                          <Input
-                            type="select"
-                            className="form-control"
-                            id="insurance-sequence-input"
-                            name="relation_with_subscriber"
-                            value={
-                              validation.values.relation_with_subscriber ||
-                              "Self"
-                            }
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.relation_with_subscriber &&
-                              validation.touched.relation_with_subscriber
-                                ? true
-                                : false
-                            }
-                          >
-                            <option value="">Select Insurance Sequence</option>
-                            <option value="Self">Self</option>
-                            <option value="Patrent">Patrent</option>
-                            <option value="Spouse">Spouse</option>
-                            <option value="Other">Other</option>
-                          </Input>
-                          {validation.errors.relation_with_subscriber &&
-                          validation.touched.relation_with_subscriber ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.relation_with_subscriber}
-                            </FormFeedback>
-                          ) : null}
-                        </div>
-                      </Col>
+                    <TabContent activeTab={insuranceActiveTab}>
+                      {insuranceTabs.map((tab) => (
+                        <TabPane key={tab.id} tabId={tab.id}>
+                          <Row>
+                            <Col lg={4}>
+                              <div className="mb-3">
+                                <label
+                                  className="form-label"
+                                  htmlFor={`provider-${tab.id}`}
+                                >
+                                  Insurance Sequence:
+                                </label>
+                                <Input
+                                  type="select"
+                                  className="form-control"
+                                  id={`provider-${tab.id}`}
+                                  name="insurance_sequence"
+                                  value={
+                                    insuranceData[tab.id]?.insurance_sequence ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                >
+                                  <option value="">
+                                    Select Insurance Sequence
+                                  </option>
+                                  <option value="Primary">Primary</option>
+                                  <option value="Secondary">Secondary</option>
+                                  <option value="Tertiary">Tertiary</option>
+                                  <option value="Other">Other</option>
+                                </Input>
+                              </div>
+                            </Col>
+                            <Col lg={8}>
+                              <div className="mb-3">
+                                <Label htmlFor={`provider-${tab.id}`}>
+                                  Insurance Provider:
+                                </Label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  id={`provider-${tab.id}`}
+                                  name="primary_insurance_provider"
+                                  placeholder="Enter Insurance Provider"
+                                  value={
+                                    insuranceData[tab.id]
+                                      ?.primary_insurance_provider || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`plan-name-${tab.id}`}>
+                                  Insurance Plan Name
+                                </Label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  id={`plan-name-${tab.id}`}
+                                  name="insurance_plan_name"
+                                  placeholder="Enter Insurance Plan name"
+                                  value={
+                                    insuranceData[tab.id]
+                                      ?.insurance_plan_name || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`policy-number-${tab.id}`}>
+                                  Policy Number
+                                </Label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  id={`policy-number-${tab.id}`}
+                                  name="policy_number"
+                                  placeholder="Enter Policy Number"
+                                  value={
+                                    insuranceData[tab.id]?.policy_number || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`group-number-${tab.id}`}>
+                                  Group Number
+                                </Label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  id={`group-number-${tab.id}`}
+                                  name="group_number"
+                                  placeholder="Enter Group number"
+                                  value={
+                                    insuranceData[tab.id]?.group_number || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`relation-${tab.id}`}>
+                                  Relation with Subscriber:
+                                </Label>
+                                <Input
+                                  type="select"
+                                  className="form-control"
+                                  id={`relation-${tab.id}`}
+                                  name="relation_with_subscriber"
+                                  value={
+                                    insuranceData[tab.id]
+                                      ?.relation_with_subscriber || "Self"
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                >
+                                  <option value="Self">Self</option>
+                                  <option value="Parent">Parent</option>
+                                  <option value="Spouse">Spouse</option>
+                                  <option value="Other">Other</option>
+                                </Input>
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`subscriber-name-${tab.id}`}>
+                                  Subscriber Name
+                                </Label>
+                                <Input
+                                  type="text"
+                                  className="form-control"
+                                  id={`subscriber-name-${tab.id}`}
+                                  name="subscriber_name"
+                                  placeholder="Enter Subscriber Name"
+                                  value={
+                                    insuranceData[tab.id]?.subscriber_name || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`subscriber-dob-${tab.id}`}>
+                                  Subscriber Date of Birth
+                                </Label>
+                                <Input
+                                  type="date"
+                                  className="form-control"
+                                  id={`subscriber-dob-${tab.id}`}
+                                  name="subscriber_dob"
+                                  value={
+                                    insuranceData[tab.id]?.subscriber_dob || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`start-date-${tab.id}`}>
+                                  Start Date
+                                </Label>
+                                <Input
+                                  type="date"
+                                  className="form-control"
+                                  id={`start-date-${tab.id}`}
+                                  name="start_date"
+                                  value={
+                                    insuranceData[tab.id]?.start_date || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={6}>
+                              <div className="mb-3">
+                                <Label htmlFor={`end-date-${tab.id}`}>
+                                  End Date
+                                </Label>
+                                <Input
+                                  type="date"
+                                  className="form-control"
+                                  id={`end-date-${tab.id}`}
+                                  name="end_date"
+                                  value={insuranceData[tab.id]?.end_date || ""}
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                            <Col lg={12}>
+                              <div className="mb-3">
+                                <Label htmlFor={`notes-${tab.id}`}>
+                                  Additional Notes
+                                </Label>
+                                <Input
+                                  type="textarea"
+                                  className="form-control"
+                                  id={`notes-${tab.id}`}
+                                  name="additional_notes"
+                                  value={
+                                    insuranceData[tab.id]?.additional_notes ||
+                                    ""
+                                  }
+                                  onChange={(e) =>
+                                    handleInsuranceChange(tab.id, e)
+                                  }
+                                />
+                              </div>
+                            </Col>
+                          </Row>
+                        </TabPane>
+                      ))}
+                    </TabContent>
 
-                      <Col lg={6}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            Subscriber Name
-                          </label>
-                          <Input
-                            type="text"
-                            className="form-control"
-                            id="city"
-                            name="subscriber_name"
-                            placeholder="Enter Subscriber Name"
-                            value={validation.values.subscriber_name || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.subscriber_name &&
-                              validation.touched.subscriber_name
-                            }
-                          />
-                          {validation.errors.subscriber_name &&
-                            validation.touched.subscriber_name && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.subscriber_name}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <Col lg={2}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            Subscriber Date of Birth
-                          </label>
-                          <Input
-                            type="date"
-                            className="form-control"
-                            id="city"
-                            name="subscriber_dob"
-                            value={validation.values.subscriber_dob || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.subscriber_dob &&
-                              validation.touched.subscriber_dob
-                            }
-                          />
-                          {validation.errors.subscriber_dob &&
-                            validation.touched.subscriber_dob && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.subscriber_dob}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <Col lg={2}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            Start Date
-                          </label>
-                          <Input
-                            type="date"
-                            className="form-control"
-                            id="city"
-                            name="start_date"
-                            value={validation.values.start_date || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.start_date &&
-                              validation.touched.start_date
-                            }
-                          />
-                          {validation.errors.start_date &&
-                            validation.touched.start_date && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.start_date}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <Col lg={2}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            End Date
-                          </label>
-                          <Input
-                            type="date"
-                            className="form-control"
-                            id="city"
-                            name="end_date"
-                            value={validation.values.end_date || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.end_date &&
-                              validation.touched.end_date
-                            }
-                          />
-                          {validation.errors.end_date &&
-                            validation.touched.end_date && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.end_date}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <Col lg={12}>
-                        <div className="mb-3">
-                          <label className="form-label" htmlFor="city">
-                            Additional Notes
-                          </label>
-                          <Input
-                            type="textarea"
-                            className="form-control"
-                            id="city"
-                            name="additional_notes"
-                            value={validation.values.additional_notes || ""}
-                            onBlur={validation.handleBlur}
-                            onChange={validation.handleChange}
-                            invalid={
-                              validation.errors.additional_notes &&
-                              validation.touched.additional_notes
-                            }
-                          />
-                          {validation.errors.additional_notes &&
-                            validation.touched.additional_notes && (
-                              <FormFeedback type="invalid">
-                                {validation.errors.additional_notes}
-                              </FormFeedback>
-                            )}
-                        </div>
-                      </Col>
-                      <div className="d-flex align-items-center gap-3">
-                        <div
-                          className="form-check form-switch"
-                          style={{
-                            transform: "scale(1.5)",
-                            marginLeft: "10px",
-                          }}
-                        >
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id="statusToggle"
-                            checked={validation.values.financial || false}
-                            onChange={() => {
-                              validation.setFieldValue(
-                                "financial",
-                                !validation.values.financial
-                              );
-                            }}
-                            style={{
-                              backgroundColor: validation.values.financial
-                                ? "green"
-                                : "red",
-                            }}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor="statusToggle"
-                          >
-                            {validation.values.financial
-                              ? "Active"
-                              : "Inactive"}
-                          </label>
-                        </div>
-                      </div>
-                    </Row>
+                    <div className="d-flex justify-content-end mt-3">
+                      <Button color="primary" onClick={addNewInsuranceTab}>
+                        Add Another Insurance
+                      </Button>
+                    </div>
                   </CardBody>
                 )}
               </Card>
-
               <Card>
                 <CardHeader>
                   <Nav className="nav-tabs-custom card-header-tabs border-bottom-0">
