@@ -95,13 +95,7 @@ const EcommerceAddProduct = () => {
         .required("Provider Last Name is required")
         .matches(/^[A-Za-z]+$/, "Only alphabets are allowed"),
       caqh_username: Yup.string().required("CAQH Username is required"),
-      caqh_password: Yup.string()
-        .required("CAQH Password is required")
-        .min(8, "Password must be at least 8 characters"),
       pecos_username: Yup.string().required("PECOS Username is required"),
-      pecos_password: Yup.string()
-        .required("PECOS Password is required")
-        .min(8, "Password must be at least 8 characters"),
       specialty: Yup.string().required("Specialty is required"),
       email: Yup.string()
         .email("Invalid email format")

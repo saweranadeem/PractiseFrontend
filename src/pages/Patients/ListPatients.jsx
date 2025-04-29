@@ -68,8 +68,13 @@ const ListPatients = () => {
     },
     { name: "Phone Number", selector: (row) => row.phone, sortable: false },
     {
-      name: "Primary Insurance Provider",
-      selector: (row) => row.primary_insurance_provider,
+      name: "Insurance Providers",
+      selector: (row) => {
+        if (!row.insurance) return "N/A";
+        return Object.values(row.insurance)
+          .map((ins) => ins.primary_insurance_provider)
+          .join(", ");
+      },
       sortable: false,
     },
     {
@@ -111,7 +116,7 @@ const ListPatients = () => {
   // alert(JSON.stringify(filteredData));
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* {JSON.stringify(filteredData  )} */}
+      {/* {JSON.stringify(filteredData)} */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Patients List</h2>
         <input

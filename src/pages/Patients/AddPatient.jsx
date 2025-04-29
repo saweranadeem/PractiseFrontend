@@ -242,7 +242,7 @@ const AddPatient = () => {
       city: Yup.string().required("City is required"),
       zip: Yup.string()
         .required("ZIP code is required")
-        .matches(/^\d{5}(-\d{4})?$/, "Invalid ZIP code format"),
+,
       emergancy_contact_name: Yup.string().required(
         "Emergency contact name is required"
       ),

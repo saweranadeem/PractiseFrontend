@@ -141,10 +141,8 @@ const EcommerceAddProduct = () => {
     "Dr. Michael Brown",
     "Dr. Sarah Davis",
   ];
-
-  const [serviceTags, setServiceTags] = useState([]);
   const [serviceInputValue, setServiceInputValue] = useState("");
-  const [specializationTags, setSpecializationTags] = useState([]);
+
   const [specializationInputValue, setSpecializationInputValue] = useState("");
   const [insuranceList, setInsuranceList] = useState([]);
   const [tabsData, setTabsData] = useState({
@@ -172,9 +170,9 @@ const EcommerceAddProduct = () => {
       npi: "",
       services: [],
       specialization: [],
+      tabsData: [],
     },
     validationSchema: Yup.object({
-      name: Yup.string().required("Please Enter a Clinic Name"),
       doctors_providers: Yup.array().min(
         1,
         "Please select at least one contract type"
@@ -183,25 +181,31 @@ const EcommerceAddProduct = () => {
         1,
         "Please select at least one Insurance"
       ),
-      name: Yup.string().required("Clinic Name is required"),
-      owner_fname: Yup.string().required("Owner First Name is required"),
-      owner_lname: Yup.string().required("Owner Last Name is required"),
+      name: Yup.string().trim().required("Owner Last Name is required"),
+      owner_fname: Yup.string().trim().required("Owner First Name is required"),
+      owner_lname: Yup.string().trim().required("Owner Last Name is required"),
       owner_email: Yup.string()
+        .trim()
         .email("Invalid email format")
         .required("Owner Email is required"),
       owner_password: Yup.string()
+        .trim()
         .required("Password is required")
         .min(8, "Password must be at least 8 characters"),
       clinic_email: Yup.string()
+        .trim()
         .email("Invalid email format")
         .required("Clinic Email is required"),
       clinic_phone: Yup.string()
+        .trim()
         .required("Clinic Phone is required")
         .matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
       clinic_website: Yup.string()
+        .trim()
         .url("Invalid URL format")
         .required("Website url is required"),
       npi: Yup.string()
+        .trim()
         .required("NPI is required")
         .matches(/^\d{10}$/, "NPI must be exactly 10 digits"),
       services: Yup.array()
@@ -212,7 +216,7 @@ const EcommerceAddProduct = () => {
         .required("Specializations are required"),
     }),
     onSubmit: (values) => {
-      console.log("Specialization tags before submission:", specialization);
+      // console.log("Specialization tags before submission:", specialization);
 
       const newClinic = {
         // name: values.name,
