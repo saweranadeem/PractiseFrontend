@@ -54,7 +54,7 @@ const UpdateUser = () => {
             email: Yup.string().email("Invalid email").required("Please Enter Email"),
             fname: Yup.string().required("Please Enter First Name"),
             lname: Yup.string().required("Please Enter Last Name"),
-            phone: Yup.string().required("Please Enter Phone Number"),
+            phone: Yup.number().required("Please Enter Phone Number"),
             role: Yup.string().required("Please Select Role"),
         }),
         onSubmit: async (values) => {

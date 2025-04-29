@@ -80,7 +80,43 @@ const EcommerceAddProduct = () => {
       insuranceList: doctor?.insuranceList || [],
     },
     validationSchema: Yup.object({
-      provider_fname: Yup.string().required("Please Enter a Clinic Name"),
+      insurance_accepted: Yup.array()
+        .min(1, "Please select at least one insurance")
+        .required("At least one insurance is required"),
+      address: Yup.string().required("Address is required"),
+
+      doctors_providers: Yup.array()
+        .min(1, "Please select at least one contract type")
+        .required("At least one contract type is required"),
+      provider_fname: Yup.string()
+        .required("Provider First Name is required")
+        .matches(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+      provider_lname: Yup.string()
+        .required("Provider Last Name is required")
+        .matches(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+      caqh_username: Yup.string().required("CAQH Username is required"),
+      caqh_password: Yup.string()
+        .required("CAQH Password is required")
+        .min(8, "Password must be at least 8 characters"),
+      pecos_username: Yup.string().required("PECOS Username is required"),
+      pecos_password: Yup.string()
+        .required("PECOS Password is required")
+        .min(8, "Password must be at least 8 characters"),
+      specialty: Yup.string().required("Specialty is required"),
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
+      phone: Yup.string()
+        .required("Phone is required")
+        .matches(/^\d{10}$/, "Phone must be exactly 10 digits"),
+      license_number: Yup.number().required("License Number is required"),
+      npi_number: Yup.string()
+        .required("NPI Number is required")
+        .matches(/^\d{10}$/, "NPI must be exactly 10 digits"),
+      tax_id: Yup.string()
+        .required("Tax ID is required")
+        .matches(/^\d{9}$/, "Tax ID must be exactly 9 digits"),
+      provider_mi: Yup.string().required("Provider_MI is required"),
     }),
     onSubmit: async (values) => {
       const updatedProvider = {

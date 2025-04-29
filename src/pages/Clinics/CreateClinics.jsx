@@ -169,6 +169,9 @@ const EcommerceAddProduct = () => {
       clinic_website: "",
       insurance_accepted: [],
       doctors_providers: [],
+      npi: "",
+      services: [],
+      specialization: [],
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Please Enter a Clinic Name"),
@@ -176,24 +179,57 @@ const EcommerceAddProduct = () => {
         1,
         "Please select at least one contract type"
       ),
+      insurance_accepted: Yup.array().min(
+        1,
+        "Please select at least one Insurance"
+      ),
+      name: Yup.string().required("Clinic Name is required"),
+      owner_fname: Yup.string().required("Owner First Name is required"),
+      owner_lname: Yup.string().required("Owner Last Name is required"),
+      owner_email: Yup.string()
+        .email("Invalid email format")
+        .required("Owner Email is required"),
+      owner_password: Yup.string()
+        .required("Password is required")
+        .min(8, "Password must be at least 8 characters"),
+      clinic_email: Yup.string()
+        .email("Invalid email format")
+        .required("Clinic Email is required"),
+      clinic_phone: Yup.string()
+        .required("Clinic Phone is required")
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+      clinic_website: Yup.string()
+        .url("Invalid URL format")
+        .required("Website url is required"),
+      npi: Yup.string()
+        .required("NPI is required")
+        .matches(/^\d{10}$/, "NPI must be exactly 10 digits"),
+      services: Yup.array()
+        .min(1, "At least one service is required")
+        .required("Services are required"),
+      specialization: Yup.array()
+        .min(1, "At least one specialization is required")
+        .required("Specializations are required"),
     }),
     onSubmit: (values) => {
-      console.log("Specialization tags before submission:", specializationTags);
+      console.log("Specialization tags before submission:", specialization);
 
       const newClinic = {
-        name: values.name,
-        owner_fname: values.owner_fname,
-        owner_lname: values.owner_lname,
-        owner_email: values.owner_email,
-        owner_password: values.owner_password,
-        clinic_email: values.clinic_email,
-        clinic_phone: values.clinic_phone,
-        clinic_website: values.clinic_website,
-        specialization: specializationTags,
-        services: serviceTags,
-        doctors_providers: values.doctors_providers,
-        insurance_accepted: values.insurance_accepted,
-        npi: values.npi,
+        // name: values.name,
+        // owner_fname: values.owner_fname,
+        // owner_lname: values.owner_lname,
+        // owner_email: values.owner_email,
+        // owner_password: values.owner_password,
+        // clinic_email: values.clinic_email,
+        // clinic_phone: values.clinic_phone,
+        // clinic_website: values.clinic_website,
+        // specialization: specializationTags,
+        // services: serviceTags,
+        // doctors_providers: values.doctors_providers,
+        // insurance_accepted: values.insurance_accepted,
+        // npi: values.npi,
+        // addresses: tabsData,
+        ...values,
         addresses: tabsData,
       };
       dispatch(onAddNewClinic(newClinic));
@@ -216,20 +252,25 @@ const EcommerceAddProduct = () => {
 
     fetchSettings();
   }, []);
-
   const handleServiceKeyPress = (e) => {
     if (e.key === "Enter" && serviceInputValue.trim() !== "") {
       e.preventDefault();
-      if (!serviceTags.includes(serviceInputValue.trim())) {
-        setServiceTags([...serviceTags, serviceInputValue.trim()]);
+      const newTag = serviceInputValue.trim();
+      if (!validation.values.services.includes(newTag)) {
+        validation.setFieldValue("services", [
+          ...validation.values.services,
+          newTag,
+        ]);
       }
       setServiceInputValue("");
     }
   };
 
   const handleServiceTagRemove = (index) => {
-    const newTags = serviceTags.filter((_, tagIndex) => tagIndex !== index);
-    setServiceTags(newTags);
+    const newTags = validation.values.services.filter(
+      (_, tagIndex) => tagIndex !== index
+    );
+    validation.setFieldValue("services", newTags);
   };
 
   const handleServiceInputChange = (e) => {
@@ -240,8 +281,11 @@ const EcommerceAddProduct = () => {
     if (e.key === "Enter" && specializationInputValue.trim() !== "") {
       e.preventDefault();
       const newTag = specializationInputValue.trim();
-      if (!specializationTags.includes(newTag)) {
-        setSpecializationTags([...specializationTags, newTag]);
+      if (!validation.values.specialization.includes(newTag)) {
+        validation.setFieldValue("specialization", [
+          ...validation.values.specialization,
+          newTag,
+        ]);
       }
       setSpecializationInputValue("");
     }
@@ -294,7 +338,10 @@ const EcommerceAddProduct = () => {
     setCustomActiveTab(tab);
   };
   const handleSpecializationTagRemove = (index) => {
-    setSpecializationTags(specializationTags.filter((_, i) => i !== index));
+    const newTags = validation.values.specialization.filter(
+      (_, i) => i !== index
+    );
+    validation.setFieldValue("specialization", newTags);
   };
 
   return (
@@ -668,8 +715,7 @@ const EcommerceAddProduct = () => {
 
                   <div className="d-flex justify-content-end mt-3">
                     <Button color="primary" onClick={addNewTab}>
-                     
-                     
+                      Add Another Address
                     </Button>
                   </div>
                 </CardBody>
@@ -837,7 +883,7 @@ const EcommerceAddProduct = () => {
               <CardBody>
                 <FormGroup>
                   <div className="d-flex flex-wrap gap-2 mb-3">
-                    {specializationTags.map((tag, index) => (
+                    {validation.values.specialization?.map((tag, index) => (
                       <div
                         key={index}
                         className="badge bg-primary text-white d-flex align-items-center"
@@ -855,22 +901,22 @@ const EcommerceAddProduct = () => {
                     className="form-control"
                     placeholder="Enter specializations"
                     type="text"
-                    name="specialization_tags"
+                    name="specialization"
                     value={specializationInputValue}
                     onBlur={validation.handleBlur}
                     onChange={handleSpecializationInputChange}
                     onKeyPress={handleSpecializationKeyPress}
                     invalid={
-                      validation.errors.specialization_tags &&
-                      validation.touched.specialization_tags
+                      validation.errors.specialization &&
+                      validation.touched.specialization
                         ? true
                         : false
                     }
                   />
-                  {validation.errors.specialization_tags &&
-                  validation.touched.specialization_tags ? (
+                  {validation.errors.specialization &&
+                  validation.touched.specialization ? (
                     <FormFeedback type="invalid">
-                      {validation.errors.specialization_tags}
+                      {validation.errors.specialization}
                     </FormFeedback>
                   ) : null}
                 </FormGroup>
@@ -883,7 +929,7 @@ const EcommerceAddProduct = () => {
               <CardBody>
                 <FormGroup>
                   <div className="d-flex flex-wrap gap-2 mb-3">
-                    {serviceTags.map((tag, index) => (
+                    {validation.values.services?.map((tag, index) => (
                       <div
                         key={index}
                         className="badge bg-primary text-white d-flex align-items-center"
@@ -901,22 +947,20 @@ const EcommerceAddProduct = () => {
                     className="form-control"
                     placeholder="Enter services"
                     type="text"
-                    name="product_tags"
+                    name="services"
                     value={serviceInputValue}
                     onBlur={validation.handleBlur}
                     onChange={handleServiceInputChange}
                     onKeyPress={handleServiceKeyPress}
                     invalid={
-                      validation.errors.product_tags &&
-                      validation.touched.product_tags
+                      validation.errors.services && validation.touched.services
                         ? true
                         : false
                     }
                   />
-                  {validation.errors.product_tags &&
-                  validation.touched.product_tags ? (
+                  {validation.errors.services && validation.touched.services ? (
                     <FormFeedback type="invalid">
-                      {validation.errors.product_tags}
+                      {validation.errors.services}
                     </FormFeedback>
                   ) : null}
                 </FormGroup>
@@ -1009,7 +1053,7 @@ const EcommerceAddProduct = () => {
                   <FormGroup>
                     <Label for="npi">National Provider Identifier (NPI)</Label>
                     <Input
-                      type="number" // Set type to "text" to handle only numeric characters
+                      type="text" // Set type to "text" to handle only numeric characters
                       name="npi" // Changed to "npi" to match the field name
                       id="npi"
                       value={validation.values.npi || ""}

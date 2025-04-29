@@ -95,13 +95,12 @@ const AddPatient = () => {
   const genders = ["Male", "Female", "Non-binary", "Prefer not to say"];
   const [isOpen, setIsOpen] = useState(true);
   const [isActive, setIsActive] = useState(false);
-  const [medicalTags, setMedicalTags] = useState([]);
+  // const [medicalTags, setMedicalTags] = useState([]);
   const [medicalInputValue, setMedicalInputValue] = useState("");
-  const [allergyTags, setAllergyTags] = useState([]);
+  // const [allergyTags, setAllergyTags] = useState([]);
   const [allergyInputValue, setAllergyInputValue] = useState("");
-  const [surgeryTags, setSurgeryTags] = useState([]);
+  // const [surgeryTags, setSurgeryTags] = useState([]);
   const [surgeryInputValue, setSurgeryInputValue] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [patient, setPatient] = useState(null);
   const { id } = useParams();
@@ -180,17 +179,6 @@ const AddPatient = () => {
       setLoading(true);
       const response = await axios.get(`${api.API_URL}/patient/${id}`);
       setPatient(response.patient);
-
-      if (response.patient.medicalTags) {
-        setMedicalTags(response.patient.medicalTags);
-      }
-      if (response.patient.allergyTags) {
-        setAllergyTags(response.patient.allergyTags);
-      }
-      if (response.patient.surgeryTags) {
-        setSurgeryTags(response.patient.surgeryTags);
-      }
-
       if (response.patient.insurance) {
         const insuranceEntries = Object.entries(response.patient.insurance);
         const initialTabs = insuranceEntries.map(([key, value], index) => ({
@@ -258,44 +246,107 @@ const AddPatient = () => {
       financial: patient?.financial || false,
       attorney: patient?.attorney || "",
       familyMedical: patient?.familyMedical || "",
-      documents: patient?.documents || "",
+      documents: patient?.documents || [],
+      medicalTags: patient?.medicalTags || [],
+      allergyTags: patient?.allergyTags || [],
+      surgeryTags: patient?.surgeryTags || [],
     },
+
     validationSchema: Yup.object({
       fname: Yup.string().required("Please Enter a User Name"),
+      lname: Yup.string().required("Please Enter a Last Name"),
+      dob: Yup.date()
+        .required("Date of Birth is required")
+        .max(new Date(), "Date of birth must be in the past"),
+      gender: Yup.string().required("Gender is required"),
+      language: Yup.string().required("Language is required"),
+      race: Yup.string().required("Race/Ethnicity is required"),
+      ssn: Yup.string().required("SSN is required"),
+      phone: Yup.string()
+        .required("Phone number is required")
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+      alt_phone: Yup.string()
+        .nullable()
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+        .required("Alt-phone is required"),
+      email: Yup.string()
+        .required("Email is required")
+        .email("Invalid email format"),
+      street: Yup.string().required("Street address is required"),
+      city: Yup.string().required("City is required"),
+      zip: Yup.string()
+        .required("ZIP code is required")
+        .matches(/^\d{5}(-\d{4})?$/, "Invalid ZIP code format"),
+      emergancy_contact_name: Yup.string().required(
+        "Emergency contact name is required"
+      ),
+      relation_to_patient: Yup.string().required(
+        "Relation to patient is required"
+      ),
+      emergancy_contact_number: Yup.string()
+        .required("Emergency contact number is required")
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+      emergancy_contact_email: Yup.string()
+        .nullable()
+        .email("Invalid email format")
+        .required("Emergency contact Email is required"),
+      familyMedical: Yup.string().required("Family Medical is required"),
+      pcp: Yup.string().required("PCP Name is required"),
+      referer: Yup.string().required("Reffering provider is required"),
+      medicalTags: Yup.array()
+        .min(1, "At least one Medical is required")
+        .required("At least one Medical  is required"),
+      allergyTags: Yup.array()
+        .min(1, "At least one Allergic  is required")
+        .required("At least one Allergy  is required"),
+      surgeryTags: Yup.array()
+        .min(1, "At least one Surgery  is required")
+        .required("At least one Surgery  is required"),
+      documents: Yup.array()
+        .min(1, "At least one Document Type  is required")
+        .required("Document Type is required"),
+      pcp_phone: Yup.string()
+        .nullable()
+        .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+        .required("PCP_Phone is required"),
+      attorney: Yup.string().required("Guardian Attorney is required"),
     }),
+
     onSubmit: async (values) => {
       const updatedPatient = {
-        fname: values.fname,
-        lname: values.lname,
-        dob: values.dob,
-        gender: values.gender,
-        language: values.language,
-        race: values.race,
-        ssn: values.ssn,
-        phone: values.phone,
-        alt_phone: values.alt_phone,
-        email: values.email,
-        street: values.street,
-        city: values.city,
-        state: values.state,
-        zip: values.zip,
-        pcp: values.pcp,
-        pcp_phone: values.pcp_phone,
-        referer: values.referer,
-        emergancy_contact_name: values.emergancy_contact_name,
-        relation_to_patient: values.relation_to_patient,
-        emergancy_contact_number: values.emergancy_contact_number,
-        emergancy_contact_email: values.emergancy_contact_email,
+        // fname: values.fname,
+        // lname: values.lname,
+        // dob: values.dob,
+        // gender: values.gender,
+        // language: values.language,
+        // race: values.race,
+        // ssn: values.ssn,
+        // phone: values.phone,
+        // alt_phone: values.alt_phone,
+        // email: values.email,
+        // street: values.street,
+        // city: values.city,
+        // state: values.state,
+        // zip: values.zip,
+        // pcp: values.pcp,
+        // pcp_phone: values.pcp_phone,
+        // referer: values.referer,
+        // emergancy_contact_name: values.emergancy_contact_name,
+        // relation_to_patient: values.relation_to_patient,
+        // emergancy_contact_number: values.emergancy_contact_number,
+        // emergancy_contact_email: values.emergancy_contact_email,
+        // insurance: insuranceData,
+        // insurance_certificate: values.insurance_certificate,
+        // medicalTags: medicalTags,
+        // allergyTags: allergyTags,
+        // surgeryTags: surgeryTags,
+        // hipaaConsent: values.hipaaConsent,
+        // financial: values.financial,
+        // attorney: values.attorney,
+        // documents: values.documents,
+        // familyMedical: values.familyMedical,
+        ...values,
         insurance: insuranceData,
-        insurance_certificate: values.insurance_certificate,
-        medicalTags: medicalTags,
-        allergyTags: allergyTags,
-        surgeryTags: surgeryTags,
-        hipaaConsent: values.hipaaConsent,
-        financial: values.financial,
-        attorney: values.attorney,
-        documents: values.documents,
-        familyMedical: values.familyMedical,
       };
 
       try {
@@ -323,29 +374,40 @@ const AddPatient = () => {
   const handleSpecializationKeyPress = (e) => {
     if (e.key === "Enter" && medicalInputValue.trim() !== "") {
       e.preventDefault();
-      if (!medicalTags.includes(medicalInputValue.trim())) {
-        setMedicalTags([...medicalTags, medicalInputValue.trim()]);
+      if (!validation.values.medicalTags.includes(medicalInputValue.trim())) {
+        validation.setFieldValue("medicalTags", [
+          ...validation.values.medicalTags,
+          medicalInputValue.trim(),
+        ]);
       }
       setMedicalInputValue("");
     }
   };
+
   const handleSpecializationTagRemove = (index) => {
-    setMedicalTags(medicalTags.filter((_, i) => i !== index));
+    const newTags = validation.values.medicalTags.filter((_, i) => i !== index);
+    validation.setFieldValue("medicalTags", newTags);
   };
+
+  // Do the same for allergyTags and surgeryTags handlers
   const handleAllergyInputChange = (e) => {
     setAllergyInputValue(e.target.value);
   };
   const handleAllergyKeyPress = (e) => {
     if (e.key === "Enter" && allergyInputValue.trim() !== "") {
       e.preventDefault();
-      if (!allergyTags.includes(allergyInputValue.trim())) {
-        setAllergyTags([...allergyTags, allergyInputValue.trim()]);
+      if (!validation.values.allergyTags.includes(allergyInputValue.trim())) {
+        validation.setFieldValue("allergyTags", [
+          ...validation.values.allergyTags,
+          allergyInputValue.trim(),
+        ]);
       }
       setAllergyInputValue("");
     }
   };
   const handleAllergyTagRemove = (index) => {
-    setAllergyTags(allergyTags.filter((_, i) => i !== index));
+    const newTags = validation.values.allergyTags.filter((_, i) => i !== index);
+    validation.setFieldValue("allergyTags", newTags);
   };
   const handleSurgeryInputChange = (e) => {
     setSurgeryInputValue(e.target.value);
@@ -353,15 +415,20 @@ const AddPatient = () => {
   const handleSurgeryKeyPress = (e) => {
     if (e.key === "Enter" && surgeryInputValue.trim() !== "") {
       e.preventDefault();
-      if (!surgeryTags.includes(surgeryInputValue.trim())) {
-        setSurgeryTags([...surgeryTags, surgeryInputValue.trim()]);
+      if (!validation.values.surgeryTags.includes(surgeryInputValue.trim())) {
+        validation.setFieldValue("surgeryTags", [
+          ...validation.values.surgeryTags,
+          surgeryInputValue.trim(),
+        ]);
       }
       setSurgeryInputValue("");
     }
   };
   const handleSurgeryTagRemove = (index) => {
-    setSurgeryTags(surgeryTags.filter((_, i) => i !== index));
+    const newTags = validation.values.surgeryTags.filter((_, i) => i !== index);
+    validation.setFieldValue("surgeryTags", newTags);
   };
+
   const toggleStatus = () => {
     setIsActive((prevStatus) => !prevStatus);
   };
@@ -1414,48 +1481,47 @@ const AddPatient = () => {
                           <CardBody>
                             <FormGroup>
                               <div className="d-flex flex-wrap gap-2 mb-3">
-                                {medicalTags.map((tag, index) => (
-                                  <div
-                                    key={index}
-                                    className="badge bg-primary text-white d-flex align-items-center"
-                                    style={{
-                                      padding: "0.5rem 1rem",
-                                      borderRadius: "20px",
-                                    }}
-                                  >
-                                    {tag}
-                                    <FaTimes
-                                      style={{
-                                        marginLeft: "8px",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() =>
-                                        handleSpecializationTagRemove(index)
-                                      }
-                                    />
-                                  </div>
-                                ))}
+                                {validation.values.medicalTags.map(
+                                  (tag, index) => (
+                                    <div
+                                      key={index}
+                                      className="badge bg-primary text-white d-flex align-items-center"
+                                    >
+                                      {tag}
+                                      <FaTimes
+                                        style={{
+                                          marginLeft: "8px",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                          handleSpecializationTagRemove(index)
+                                        }
+                                      />
+                                    </div>
+                                  )
+                                )}
                               </div>
                               <Input
                                 className="form-control"
-                                placeholder="Enter specializations"
+                                placeholder="Enter medical history"
                                 type="text"
-                                name="medical_tags"
-                                value={medicalInputValue}
+                                name="medicalTags"
                                 onBlur={validation.handleBlur}
+                                value={medicalInputValue}
                                 onChange={handleSpecializationInputChange}
                                 onKeyPress={handleSpecializationKeyPress}
                                 invalid={
-                                  validation.errors.medical_tags &&
-                                  validation.touched.medical_tags
+                                  validation.errors.medicalTags &&
+                                  validation.touched.medicalTags
                                     ? true
                                     : false
                                 }
                               />
-                              {validation.errors.medical_tags &&
-                              validation.touched.medical_tags ? (
+
+                              {validation.errors.medicalTags &&
+                              validation.touched.medicalTags ? (
                                 <FormFeedback type="invalid">
-                                  {validation.errors.medical_tags}
+                                  {validation.errors.medicalTags}
                                 </FormFeedback>
                               ) : null}
                             </FormGroup>
@@ -1470,35 +1536,33 @@ const AddPatient = () => {
                           <CardBody>
                             <FormGroup>
                               <div className="d-flex flex-wrap gap-2 mb-3">
-                                {allergyTags.map((tag, index) => (
-                                  <div
-                                    key={index}
-                                    className="badge bg-primary text-white d-flex align-items-center"
-                                    style={{
-                                      padding: "0.5rem 1rem",
-                                      borderRadius: "20px",
-                                    }}
-                                  >
-                                    {tag}
-                                    <FaTimes
-                                      style={{
-                                        marginLeft: "8px",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() =>
-                                        handleAllergyTagRemove(index)
-                                      }
-                                    />
-                                  </div>
-                                ))}
+                                {validation.values.allergyTags.map(
+                                  (tag, index) => (
+                                    <div
+                                      key={index}
+                                      className="badge bg-primary text-white d-flex align-items-center"
+                                    >
+                                      {tag}
+                                      <FaTimes
+                                        style={{
+                                          marginLeft: "8px",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                          handleAllergyTagRemove(index)
+                                        }
+                                      />
+                                    </div>
+                                  )
+                                )}
                               </div>
                               <Input
                                 className="form-control"
-                                placeholder="Enter Allergies"
+                                placeholder="Enter medical history"
                                 type="text"
-                                name="allergy_tags"
-                                value={allergyInputValue}
+                                name="allergyTags"
                                 onBlur={validation.handleBlur}
+                                value={allergyInputValue}
                                 onChange={handleAllergyInputChange}
                                 onKeyPress={handleAllergyKeyPress}
                                 invalid={
@@ -1528,48 +1592,46 @@ const AddPatient = () => {
                           <CardBody>
                             <FormGroup>
                               <div className="d-flex flex-wrap gap-2 mb-3">
-                                {surgeryTags.map((tag, index) => (
-                                  <div
-                                    key={index}
-                                    className="badge bg-primary text-white d-flex align-items-center"
-                                    style={{
-                                      padding: "0.5rem 1rem",
-                                      borderRadius: "20px",
-                                    }}
-                                  >
-                                    {tag}
-                                    <FaTimes
-                                      style={{
-                                        marginLeft: "8px",
-                                        cursor: "pointer",
-                                      }}
-                                      onClick={() =>
-                                        handleSurgeryTagRemove(index)
-                                      }
-                                    />
-                                  </div>
-                                ))}
+                                {validation.values.surgeryTags.map(
+                                  (tag, index) => (
+                                    <div
+                                      key={index}
+                                      className="badge bg-primary text-white d-flex align-items-center"
+                                    >
+                                      {tag}
+                                      <FaTimes
+                                        style={{
+                                          marginLeft: "8px",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                          handleSurgeryTagRemove(index)
+                                        }
+                                      />
+                                    </div>
+                                  )
+                                )}
                               </div>
                               <Input
                                 className="form-control"
-                                placeholder="Enter Surgeries"
+                                placeholder="Enter medical history"
                                 type="text"
-                                name="surgery_tags"
+                                name="surgeryTags"
                                 value={surgeryInputValue}
                                 onBlur={validation.handleBlur}
                                 onChange={handleSurgeryInputChange}
                                 onKeyPress={handleSurgeryKeyPress}
                                 invalid={
-                                  validation.errors.surgery_tags &&
-                                  validation.touched.surgery_tags
+                                  validation.errors.surgeryTags &&
+                                  validation.touched.surgeryTags
                                     ? true
                                     : false
                                 }
                               />
-                              {validation.errors.surgery_tags &&
-                              validation.touched.surgery_tags ? (
+                              {validation.errors.surgeryTags &&
+                              validation.touched.surgeryTags ? (
                                 <FormFeedback type="invalid">
-                                  {validation.errors.surgery_tags}
+                                  {validation.errors.surgeryTags}
                                 </FormFeedback>
                               ) : null}
                             </FormGroup>

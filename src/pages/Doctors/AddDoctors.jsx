@@ -80,15 +80,44 @@ const EcommerceAddProduct = () => {
       doctors_providers: [],
     },
     validationSchema: Yup.object({
-      provider_fname: Yup.string().required("Please Enter a Clinic Name"),
-      insurance_accepted: Yup.array().min(
-        1,
-        "Please select at least one insurance"
-      ),
-      doctors_providers: Yup.array().min(
-        1,
-        "Please select at least one contract type"
-      ),
+      insurance_accepted: Yup.array()
+        .min(1, "Please select at least one insurance")
+        .required("At least one insurance is required"),
+      address: Yup.string().required("Address is required"),
+
+      doctors_providers: Yup.array()
+        .min(1, "Please select at least one contract type")
+        .required("At least one contract type is required"),
+      provider_fname: Yup.string()
+        .required("Provider First Name is required")
+        .matches(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+      provider_lname: Yup.string()
+        .required("Provider Last Name is required")
+        .matches(/^[A-Za-z]+$/, "Only alphabets are allowed"),
+      caqh_username: Yup.string().required("CAQH Username is required"),
+      caqh_password: Yup.string()
+        .required("CAQH Password is required")
+        .min(8, "Password must be at least 8 characters"),
+      pecos_username: Yup.string().required("PECOS Username is required"),
+      pecos_password: Yup.string()
+        .required("PECOS Password is required")
+        .min(8, "Password must be at least 8 characters"),
+      specialty: Yup.string().required("Specialty is required"),
+      email: Yup.string()
+        .email("Invalid email format")
+        .required("Email is required"),
+      phone: Yup.string()
+        .required("Phone is required")
+        .matches(/^\d{10}$/, "Phone must be exactly 10 digits"),
+      license_number: Yup.number().required("License Number is required"),
+      npi_number: Yup.string()
+        .required("NPI Number is required")
+        .matches(/^\d{10}$/, "NPI must be exactly 10 digits"),
+      tax_id: Yup.string()
+        .required("Tax ID is required")
+        .matches(/^\d{9}$/, "Tax ID must be exactly 9 digits"),
+
+      provider_mi: Yup.string().required("Provider_MI is required"),
     }),
     onSubmit: (values) => {
       const newProvider = {
@@ -391,17 +420,17 @@ const EcommerceAddProduct = () => {
                     </Col>
                     <Col sm={6}>
                       <div className="mb-3">
-                        <label
+                        <Label
                           className="form-label"
-                          htmlFor="product-stock-input"
+                          htmlFor="caqh-password-input"
                         >
                           CAQH Password
-                        </label>
-                        <div className="input-group mb-3">
+                        </Label>
+                        <div className="position-relative">
                           <Input
                             type={showCaqhPassword ? "text" : "password"}
-                            className="form-control"
-                            id="product-stock-input"
+                            className="form-control pe-5" // Added right padding
+                            id="caqh-password-input"
                             placeholder="Enter CAQH Password"
                             name="caqh_password"
                             value={validation.values.caqh_password || ""}
@@ -410,8 +439,6 @@ const EcommerceAddProduct = () => {
                             invalid={
                               validation.errors.caqh_password &&
                               validation.touched.caqh_password
-                                ? true
-                                : false
                             }
                           />
                           <button
@@ -419,17 +446,13 @@ const EcommerceAddProduct = () => {
                             onClick={() =>
                               setShowCaqhPassword(!showCaqhPassword)
                             }
-                            className="btn btn-priamry"
+                            className="btn btn-link position-absolute end-0 top-50 translate-middle-y me-2"
                             style={{
-                              position: "absolute",
-                              top: "50%",
-                              right: "10px",
-                              transform: "translateY(-50%)",
-                              border: "none",
-                              background: "red",
-                              backgroundColor: "transparent", // Add this line
                               zIndex: 5,
                               cursor: "pointer",
+                              border: "none",
+                              background: "transparent",
+                              color: "#495057", // Match input text color
                             }}
                           >
                             {showCaqhPassword ? (
@@ -438,13 +461,13 @@ const EcommerceAddProduct = () => {
                               <Eye size={18} />
                             )}
                           </button>
-                          {validation.errors.caqh_password &&
-                          validation.touched.caqh_password ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.caqh_password}
-                            </FormFeedback>
-                          ) : null}
                         </div>
+                        {validation.errors.caqh_password &&
+                        validation.touched.caqh_password ? (
+                          <FormFeedback type="invalid" className="d-block">
+                            {validation.errors.caqh_password}
+                          </FormFeedback>
+                        ) : null}
                       </div>
                     </Col>
                     <Col sm={6}>
@@ -472,6 +495,7 @@ const EcommerceAddProduct = () => {
                                 : false
                             }
                           />
+
                           {validation.errors.pecos_username &&
                           validation.touched.pecos_username ? (
                             <FormFeedback type="invalid">
@@ -483,17 +507,11 @@ const EcommerceAddProduct = () => {
                     </Col>
                     <Col sm={6}>
                       <div className="mb-3">
-                        <label
-                          className="form-label"
-                          htmlFor="product-stock-input"
-                        >
-                          PECOS Password
-                        </label>
-                        <div className="input-group mb-3">
+                        <Label className="form-label">PECOS Password</Label>
+                        <div className="position-relative">
                           <Input
                             type={showPecosPassword ? "text" : "password"}
-                            className="form-control"
-                            id="product-stock-input"
+                            className="form-control pe-5"
                             placeholder="Enter PECOS Password"
                             name="pecos_password"
                             value={validation.values.pecos_password || ""}
@@ -502,8 +520,6 @@ const EcommerceAddProduct = () => {
                             invalid={
                               validation.errors.pecos_password &&
                               validation.touched.pecos_password
-                                ? true
-                                : false
                             }
                           />
                           <button
@@ -511,17 +527,12 @@ const EcommerceAddProduct = () => {
                             onClick={() =>
                               setShowPecosPassword(!showPecosPassword)
                             }
-                            className="btn btn-priamry"
+                            className="btn btn-link position-absolute end-0 top-50 translate-middle-y me-2"
                             style={{
-                              position: "absolute",
-                              top: "50%",
-                              right: "10px",
-                              transform: "translateY(-50%)",
-                              border: "none",
-                              background: "red",
-                              backgroundColor: "transparent", // Add this line
                               zIndex: 5,
                               cursor: "pointer",
+                              border: "none",
+                              background: "transparent",
                             }}
                           >
                             {showPecosPassword ? (
@@ -530,13 +541,13 @@ const EcommerceAddProduct = () => {
                               <Eye size={18} />
                             )}
                           </button>
-                          {validation.errors.pecos_password &&
-                          validation.touched.pecos_password ? (
-                            <FormFeedback type="invalid">
-                              {validation.errors.pecos_password}
-                            </FormFeedback>
-                          ) : null}
                         </div>
+                        {validation.errors.pecos_password &&
+                        validation.touched.pecos_password ? (
+                          <FormFeedback type="invalid" className="d-block">
+                            {validation.errors.pecos_password}
+                          </FormFeedback>
+                        ) : null}
                       </div>
                     </Col>
                     <Col sm={6}>

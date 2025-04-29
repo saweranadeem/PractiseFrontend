@@ -63,8 +63,7 @@ const ListPatients = () => {
     },
     {
       name: "Home Address",
-      selector: (row) =>
-        `${row.street}, ${row.city}, ${row.state}, ${row.zip}`,
+      selector: (row) => `${row.street}, ${row.city}, ${row.state}, ${row.zip}`,
       sortable: false,
     },
     { name: "Phone Number", selector: (row) => row.phone, sortable: false },
@@ -77,19 +76,19 @@ const ListPatients = () => {
       name: "Actions",
       cell: (row) => (
         <div className="d-flex gap-2">
-        <button
-          onClick={() => handleUpdate(row._id)}
-          className="btn btn-primary"
-        >
-          U
-        </button>
-        <button
-          onClick={() => handleDelete(row._id)}
-          className="btn btn-danger"
-        >
-          D
-        </button>
-      </div>
+          <button
+            onClick={() => handleUpdate(row._id)}
+            className="btn btn-primary"
+          >
+            U
+          </button>
+          <button
+            onClick={() => handleDelete(row._id)}
+            className="btn btn-danger"
+          >
+            D
+          </button>
+        </div>
       ),
       ignoreRowClick: true,
       allowOverflow: true,
@@ -109,9 +108,10 @@ const ListPatients = () => {
 
   if (loading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6 text-red-500">{error}</div>;
-
+  // alert(JSON.stringify(filteredData));
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      {/* {JSON.stringify(filteredData  )} */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold">Patients List</h2>
         <input
