@@ -29,6 +29,9 @@ import ListCPTS from "../pages/CPT/ListCPT";
 import CreateCPTS from "../pages/CPT/AddCPT";
 import UpdateCPTS from "../pages/CPT/UpdateCPT";
 
+import CreateAuth from "../pages/Authorization/CreateAuth";
+import ListAuth from "../pages/Authorization/ListAuth";
+import UpdateAuth from "../pages/Authorization/UpdateAuth";
 import DashboardCrypto from "../pages/DashboardCrypto";
 import DashboardProject from "../pages/DashboardProject";
 import DashboardNFT from "../pages/DashboardNFT";
@@ -339,7 +342,10 @@ const authProtectedRoutes = [
 
   //Settings
   { path: "/settings", component: <Settings /> },
-
+  //Authorization
+  { path: "/authorization-list", component: <ListAuth /> },
+  { path: "/authorization-create", component: <CreateAuth /> },
+  { path: "/authorization-edit/:id", component: <UpdateAuth /> },
   //EMail
   { path: "/apps-mailbox", component: <MailInbox /> },
   { path: "/apps-email-basic", component: <BasicAction /> },

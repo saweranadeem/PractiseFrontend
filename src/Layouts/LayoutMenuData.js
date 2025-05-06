@@ -20,13 +20,13 @@ const Navdata = () => {
   //Calender
   const [isCalender, setCalender] = useState(false);
 
-
   // Authentication
   const [isSignIn, setIsSignIn] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   // Pages
   const [isLanding, setIsLanding] = useState(false);
   const [isCpt, setIsCpt] = useState(false);
+  const [isAuthorization, setIsAuthorization] = useState(false);
 
   const [iscurrentState, setIscurrentState] = useState("Dashboard");
 
@@ -92,6 +92,9 @@ const Navdata = () => {
     if (iscurrentState !== "Cpt") {
       setIsCpt(false);
     }
+    if (iscurrentState !== "Authorization") {
+      setIsAuthorization(false);
+    }
   }, [
     history,
     iscurrentState,
@@ -107,6 +110,7 @@ const Navdata = () => {
     isIcons,
     isMaps,
     isMultiLevel,
+    isAuthorization,
   ]);
 
   const menuItems = [
@@ -127,6 +131,7 @@ const Navdata = () => {
         updateIconSidebar(e);
       },
     },
+
     {
       id: "apps",
       label: "Calender",
@@ -360,7 +365,7 @@ const Navdata = () => {
           label: "Doctors Listing",
           link: "/doctors-list",
           parentId: "landing",
-        }
+        },
       ],
     },
     {
@@ -387,9 +392,38 @@ const Navdata = () => {
           label: "CPT Listing",
           link: "/cpt-list",
           parentId: "cpt",
-        }
+        },
       ],
     },
+
+    {
+      id: "authorization",
+      label: "Authorization",
+      icon: "ri-shield-user-line",
+      link: "/#",
+      stateVariables: isAuthorization,
+      click: function (e) {
+        e.preventDefault();
+        setIsAuthorization(!isAuthorization);
+        setIscurrentState("Authorization");
+        updateIconSidebar(e);
+      },
+      subItems: [
+        {
+          id: "addAuth",
+          label: "Add Authorization",
+          link: "/authorization-create",
+          parentId: "authorization",
+        },
+        {
+          id: "listAuth",
+          label: "Authorization Listing",
+          link: "/authorization-list",
+          parentId: "authorization",
+        },
+      ],
+    },
+
     {
       id: "settings",
       label: "Settings",
@@ -403,7 +437,6 @@ const Navdata = () => {
         updateIconSidebar(e);
       },
     },
-  
   ];
   return <React.Fragment>{menuItems}</React.Fragment>;
 };
